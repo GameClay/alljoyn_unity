@@ -16,9 +16,7 @@
 Import('env')
 
 # AllJoyn Sources
-srcs = [ f for f in env.Glob('*.cc') + env.Glob('*.c')
-         if not (str(f).endswith('version.cc') or
-                 (env['OS_GROUP'] == 'windows' and str(f).endswith('UnixTransport.cc'))) ]
+srcs = env.Glob('*.cc')
 
 objs = env.SharedObject(srcs)
 
