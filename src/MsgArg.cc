@@ -27,8 +27,14 @@
 
 #include <alljoyn/Message.h>
 #include <alljoyn/MsgArg.h>
+#include <alljoyn_unity/Message.h>
+#include <alljoyn_unity/MsgArg.h>
 
 #define QCC_MODULE "ALLJOYN"
+
+namespace ajn {
+extern QStatus MsgArgUtils_SetV(MsgArg* args, size_t& numArgs, const char* signature, va_list* argp);
+}
 
 struct _alljoyn_msgargs_handle {
     /* Empty by design, this is just to allow the type restrictions to save coders from themselves */
@@ -53,7 +59,7 @@ QStatus alljoyn_msgargs_set(alljoyn_msgargs args, size_t argOffset, size_t* numA
 {
     va_list argp;
     va_start(argp, signature);
-    QStatus status = ajn::MsgArgUtils::SetV(((ajn::MsgArg*)args) + argOffset, *numArgs, signature, &argp);
+    QStatus status = ajn::MsgArgUtils_SetV(((ajn::MsgArg*)args) + argOffset, *numArgs, signature, &argp);
     va_end(argp);
     return status;
 }

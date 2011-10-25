@@ -18,24 +18,10 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  ******************************************************************************/
-#include <qcc/platform.h>
-#include <qcc/Debug.h>
-#include <qcc/Util.h>
-#include <qcc/Event.h>
-#include <qcc/String.h>
-#include <qcc/Timer.h>
-#include <qcc/atomic.h>
-#include <qcc/XmlElement.h>
-#include <qcc/StringSource.h>
-#include <qcc/FileStream.h>
-
 #include <assert.h>
-#include <algorithm>
 
 #include <alljoyn/BusAttachment.h>
-#include <alljoyn/BusListener.h>
-#include <alljoyn/DBusStd.h>
-#include <alljoyn/AllJoynStd.h>
+#include <alljoyn_unity/BusAttachment.h>
 
 #define QCC_MODULE "ALLJOYN"
 

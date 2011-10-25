@@ -15,12 +15,8 @@
 
 Import('env')
 
-# AllJoyn Sources
-srcs = env.Glob('*.cc')
+# Basic Sample programs
+env.SConscript('basic/SConscript')
 
-objs = env.SharedObject(srcs)
-
-# AllJoyn Library
-liballjoyn_unity = env.SharedLibrary('alljoyn_unity', objs)
-
-Return('liballjoyn_unity')
+# Security Sample programs
+env.SConscript('secure/SConscript')

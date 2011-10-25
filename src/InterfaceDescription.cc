@@ -20,12 +20,8 @@
  *    limitations under the License.
  ******************************************************************************/
 
-#include <qcc/platform.h>
-#include <qcc/String.h>
-#include <qcc/StringMapKey.h>
-#include <map>
-#include <alljoyn/AllJoynStd.h>
-#include <alljoyn/DBusStd.h>
+#include <alljoyn/InterfaceDescription.h>
+#include <alljoyn_unity/InterfaceDescription.h>
 #include <Status.h>
 
 #define QCC_MODULE "ALLJOYN"

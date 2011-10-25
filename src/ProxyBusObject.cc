@@ -20,12 +20,9 @@
  *    limitations under the License.
  ******************************************************************************/
 
-#include <qcc/platform.h>
-
 #include <assert.h>
 #include <alljoyn/ProxyBusObject.h>
-
-#include <Status.h>
+#include <alljoyn_unity/ProxyBusObject.h>
 
 #define QCC_MODULE "ALLJOYN"
 

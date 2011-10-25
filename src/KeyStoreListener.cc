@@ -19,11 +19,11 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  ******************************************************************************/
+
 #include <alljoyn/KeyStoreListener.h>
-#include "KeyStore.h"
+#include <alljoyn_unity/KeyStoreListener.h>
 #include <string.h>
 #include <assert.h>
-#include <string.h>
 
 namespace ajn {
 

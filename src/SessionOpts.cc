@@ -19,8 +19,10 @@
  *    limitations under the License.
  ******************************************************************************/
 
-#include <qcc/platform.h>
 #include <alljoyn/MsgArg.h>
+#include <alljoyn/Session.h>
+#include <alljoyn_unity/MsgArg.h>
+#include <alljoyn_unity/Session.h>
 
 #define QCC_MODULE "ALLJOYN"
 

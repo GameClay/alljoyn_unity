@@ -19,7 +19,9 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  ******************************************************************************/
+
 #include <alljoyn/SessionListener.h>
+#include <alljoyn_unity/SessionListener.h>
 #include <string.h>
 #include <assert.h>
 

@@ -21,6 +21,7 @@
  ******************************************************************************/
 
 #include <alljoyn/BusObject.h>
+#include <alljoyn_unity/BusObject.h>
 #include <map>
 
 using namespace qcc;

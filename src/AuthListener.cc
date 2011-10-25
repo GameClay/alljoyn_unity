@@ -21,6 +21,7 @@
  ******************************************************************************/
 
 #include <alljoyn/AuthListener.h>
+#include <alljoyn_unity/AuthListener.h>
 #include <assert.h>
 
 using namespace qcc;

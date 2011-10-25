@@ -30,9 +30,26 @@ sys.path.append('../build_core/tools/scons')
 if not env.has_key('_ALLJOYNCORE_'):
     env.SConscript('../alljoyn_core/SConscript')
 
-# AllJoyn C binding
-env.SConscript('src/SConscript')
+# Add support for multiple build targets in the same workset
+env.VariantDir('$OBJDIR', 'src', duplicate = 0)
+env.VariantDir('$OBJDIR/samples', 'samples', duplicate = 0)
 
-# AllJoyn samples
-#env.SConscript('samples/SConscript')
+# Install headers
+env.Install('$DISTDIR/inc/alljoyn_unity', env.Glob('inc/alljoyn_unity/*.h'))
+
+# Header file includes
+env.Append(CPPPATH = [env.Dir('inc')])
+
+# Make private headers available
+env.Append(CPPPATH = [env.Dir('src')])
+
+# AllJoyn Libraries
+libs = env.SConscript('$OBJDIR/SConscript')
+dlibs = env.Install('$DISTDIR/lib', libs)
+env.Append(LIBPATH = [env.Dir('$DISTDIR/lib')])
+env['ALLJOYN_UNITY_DYLIB'] = dlibs
+
+# Sample programs
+progs = env.SConscript('$OBJDIR/samples/SConscript')
+env.Install('$DISTDIR/bin/samples', progs)
 

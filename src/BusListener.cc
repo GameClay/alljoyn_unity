@@ -19,7 +19,9 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  ******************************************************************************/
+
 #include <alljoyn/BusListener.h>
+#include <alljoyn_unity/BusListener.h>
 #include <string.h>
 #include <assert.h>
 

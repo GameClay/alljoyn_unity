@@ -19,7 +19,9 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  ******************************************************************************/
+
 #include <alljoyn/SessionPortListener.h>
+#include <alljoyn_unity/SessionPortListener.h>
 #include <string.h>
 #include <assert.h>
 
