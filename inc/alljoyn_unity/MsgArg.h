@@ -65,18 +65,6 @@ extern AJ_API void alljoyn_msgargs_destroy(alljoyn_msgargs arg);
  */
 extern AJ_API QStatus alljoyn_msgargs_set(alljoyn_msgargs args, size_t argOffset, size_t* numArgs, const char* signature, ...);
 
-/*
-    AllJoynString v_objPath;
-    AllJoynSignature v_signature;
-    AllJoynHandle v_handle;
-    AllJoynArray v_array;
-    AllJoynStruct v_struct;
-    AllJoynDictEntry v_dictEntry;
-    AllJoynVariant v_variant;
-    AllJoynScalarArray v_scalarArray;
-    AllJoynInvalid v_invalid;
- */
-
 extern AJ_API uint8_t alljoyn_msgargs_as_uint8(const alljoyn_msgargs args, size_t idx);
 extern AJ_API QC_BOOL alljoyn_msgargs_as_bool(const alljoyn_msgargs args, size_t idx);
 extern AJ_API int16_t alljoyn_msgargs_as_int16(const alljoyn_msgargs args, size_t idx);
@@ -87,7 +75,20 @@ extern AJ_API int64_t alljoyn_msgargs_as_int64(const alljoyn_msgargs args, size_
 extern AJ_API uint64_t alljoyn_msgargs_as_uint64(const alljoyn_msgargs args, size_t idx);
 extern AJ_API double alljoyn_msgargs_as_double(const alljoyn_msgargs args, size_t idx);
 extern AJ_API const char* alljoyn_msgargs_as_string(const alljoyn_msgargs args, size_t idx);
-
+extern AJ_API const char* alljoyn_msgargs_as_objpath(const alljoyn_msgargs args, size_t idx);
+extern AJ_API alljoyn_msgargs alljoyn_msgargs_as_variant(const alljoyn_msgargs args, size_t idx);
+extern AJ_API void alljoyn_msgargs_as_signature(const alljoyn_msgargs args, size_t idx,
+                                                uint8_t* out_len, const char** out_sig);
+extern AJ_API void alljoyn_msgargs_as_handle(const alljoyn_msgargs args, size_t idx,
+                                             void** out_socketFd);
+extern AJ_API const alljoyn_msgargs alljoyn_msgargs_as_array(const alljoyn_msgargs args, size_t idx,
+                                                             size_t* out_len, const char** out_sig);
+extern AJ_API alljoyn_msgargs alljoyn_msgargs_as_struct(const alljoyn_msgargs args, size_t idx,
+                                                        size_t* out_numMembers);
+extern AJ_API void alljoyn_msgargs_as_dictentry(const alljoyn_msgargs args, size_t idx,
+                                                alljoyn_msgargs* out_key, alljoyn_msgargs* out_val);
+extern AJ_API void alljoyn_msgargs_as_scalararray(const alljoyn_msgargs args, size_t idx,
+                                                  size_t* out_numElements, const void** out_elements);
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
