@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AllJoynUnity", "AllJoynUnity\AllJoynUnity.csproj", "{17D5862E-E517-4677-9D55-6BE01FEC4D9D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "basic_client", "basic_client\basic_client.csproj", "{EDBBFEC4-B5BC-49F2-A4D4-1E50941A351D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{17D5862E-E517-4677-9D55-6BE01FEC4D9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17D5862E-E517-4677-9D55-6BE01FEC4D9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17D5862E-E517-4677-9D55-6BE01FEC4D9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17D5862E-E517-4677-9D55-6BE01FEC4D9D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDBBFEC4-B5BC-49F2-A4D4-1E50941A351D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDBBFEC4-B5BC-49F2-A4D4-1E50941A351D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDBBFEC4-B5BC-49F2-A4D4-1E50941A351D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDBBFEC4-B5BC-49F2-A4D4-1E50941A351D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = basic_client\basic_client.csproj
+	EndGlobalSection
+EndGlobal
