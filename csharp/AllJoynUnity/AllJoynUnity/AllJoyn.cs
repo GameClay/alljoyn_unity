@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace AllJoynUnity
 {
-	public class AllJoyn
+	public partial class AllJoyn
 	{
 		// DLL name for externs
 		private const string DLL_IMPORT_TARGET = "alljoyn_unity";

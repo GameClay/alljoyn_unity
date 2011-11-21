@@ -34,6 +34,9 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="AllJoyn.cs" />
+    <Compile Include="BusAttachment.cs" />
+    <Compile Include="InterfaceDescription.cs" />
+    <Compile Include="Message.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
