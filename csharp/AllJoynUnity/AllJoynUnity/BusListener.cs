@@ -40,16 +40,6 @@ namespace AllJoynUnity
 				gch.Free();
 			}
 			
-			#region Properties
-			internal IntPtr UnmanagedPtr
-			{
-				get
-				{
-					return _busListener;
-				}
-			}
-			#endregion
-			
 			#region Events
 			public event ListenerRegisteredEventHandler ListenerRegistered;
 			public event ListenerUnregisteredEventHandler ListenerUnregistered;
@@ -219,6 +209,16 @@ namespace AllJoynUnity
 				public IntPtr nameOwnerChanged;
 				public IntPtr busStopping;
 				public IntPtr busDisconnected;
+			}
+			#endregion
+			
+			#region Internal Properties
+			internal IntPtr UnmanagedPtr
+			{
+				get
+				{
+					return _busListener;
+				}
 			}
 			#endregion
 			

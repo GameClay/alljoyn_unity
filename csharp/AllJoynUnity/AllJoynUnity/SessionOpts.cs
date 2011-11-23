@@ -53,14 +53,6 @@ namespace AllJoynUnity
 					return (TransportMask)alljoyn_sessionopts_transports(_sessionOpts);
 				}
 			}
-			
-			internal IntPtr UnmanagedPtr
-			{
-				get
-				{
-					return _sessionOpts;
-				}
-			}
 			#endregion
 			
 			public SessionOpts(TrafficType trafficType, bool isMultipoint, ProximityType proximity, TransportMask transports)
@@ -131,6 +123,16 @@ namespace AllJoynUnity
 			~SessionOpts()
 			{
 				Dispose(false);
+			}
+			#endregion
+			
+			#region Internal Properties
+			internal IntPtr UnmanagedPtr
+			{
+				get
+				{
+					return _sessionOpts;
+				}
 			}
 			#endregion
 			

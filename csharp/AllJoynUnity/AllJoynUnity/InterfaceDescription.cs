@@ -27,10 +27,10 @@ namespace AllJoynUnity
 				_interfaceDescription = interfaceDescription;
 			}
 			
-			public Status AddMember(Message.Type type, string name, string inputSignature,
+			public QStatus AddMember(Message.Type type, string name, string inputSignature,
 				string outputSignature, string argNames, AnnotationFlags annotation = AnnotationFlags.Default)
 			{
-				return (Status)alljoyn_interfacedescription_addmember(_interfaceDescription,
+				return alljoyn_interfacedescription_addmember(_interfaceDescription,
 					(int)type, name, inputSignature, outputSignature, argNames, (byte)annotation);
 			}
 			
@@ -52,6 +52,16 @@ namespace AllJoynUnity
 			
 			[DllImport(DLL_IMPORT_TARGET)]
 			private extern static void alljoyn_interfacedescription_activate(IntPtr iface);
+			#endregion
+			
+			#region Internal Properties
+			internal IntPtr UnmanagedPtr
+			{
+				get
+				{
+					return _interfaceDescription;
+				}
+			}
 			#endregion
 			
 			#region Data

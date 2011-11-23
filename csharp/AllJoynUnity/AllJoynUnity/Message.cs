@@ -5,7 +5,7 @@ namespace AllJoynUnity
 {
 	public partial class AllJoyn
 	{
-		public class Message
+		public class Message : IDisposable
 		{
 			public enum Type : int
 			{
@@ -16,10 +16,64 @@ namespace AllJoynUnity
 				Signal = 4
 			}
 			
+			public Message(BusAttachment bus)
+			{
+				_message = alljoyn_message_create(bus.UnmanagedPtr);
+			}
+			
+			public MsgArgs GetArgs(uint index)
+			{
+				IntPtr msgArgs = alljoyn_message_getarg(_message, index);
+				return (msgArgs != IntPtr.Zero ? new MsgArgs(msgArgs) : null);
+			}
+			
+			#region IDisposable
+			public void Dispose()
+			{
+				Dispose(true);
+				GC.SuppressFinalize(this); 
+			}
+			
+			protected virtual void Dispose(bool disposing)
+			{
+				if(!_isDisposed)
+				{
+					alljoyn_message_destroy(_message);
+					_message = IntPtr.Zero;
+				}
+				_isDisposed = true;
+			}
+			
+			~Message()
+			{
+				Dispose(false);
+			}
+			#endregion
+			
 			#region DLL Imports
+			[DllImport(DLL_IMPORT_TARGET)]
+			private static extern IntPtr alljoyn_message_create(IntPtr bus);
+			
+			[DllImport(DLL_IMPORT_TARGET)]
+			private static extern void alljoyn_message_destroy(IntPtr msg);
+			
+			[DllImport(DLL_IMPORT_TARGET)]
+			private static extern IntPtr alljoyn_message_getarg(IntPtr msg, uint argN);
+			#endregion
+			
+			#region Internal Properties
+			internal IntPtr UnmanagedPtr
+			{
+				get
+				{
+					return _message;
+				}
+			}
 			#endregion
 			
 			#region Data
+			IntPtr _message;
+			bool _isDisposed = false;
 			#endregion
 		}
 	}

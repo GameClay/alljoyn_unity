@@ -12,7 +12,7 @@ namespace AllJoynUnity
 				_busAttachment = alljoyn_busattachment_create(applicationName, allowRemoteMessages ? 1 : 0);
 			}
 			
-			public Status CreateInterface(string interfaceName, bool secure, out InterfaceDescription iface)
+			public QStatus CreateInterface(string interfaceName, bool secure, out InterfaceDescription iface)
 			{
 				IntPtr interfaceDescription;
 				int qstatus = alljoyn_busattachment_createinterface(_busAttachment,
@@ -25,22 +25,22 @@ namespace AllJoynUnity
 				{
 					iface = null;
 				}
-				return (Status)qstatus;
+				return qstatus;
 			}
 			
-			public Status Start()
+			public QStatus Start()
 			{
-				return (Status)alljoyn_busattachment_start(_busAttachment);
+				return alljoyn_busattachment_start(_busAttachment);
 			}
 			
-			public Status Stop(bool blockUntilStopped)
+			public QStatus Stop(bool blockUntilStopped)
 			{
-				return (Status)alljoyn_busattachment_stop(_busAttachment, blockUntilStopped ? 1 : 0);
+				return alljoyn_busattachment_stop(_busAttachment, blockUntilStopped ? 1 : 0);
 			}
 			
-			public Status Connect(string connectSpec)
+			public QStatus Connect(string connectSpec)
 			{
-				return (Status)alljoyn_busattachment_connect(_busAttachment, connectSpec);
+				return alljoyn_busattachment_connect(_busAttachment, connectSpec);
 			}
 			
 			public void RegisterBusListener(BusListener listener)
@@ -48,12 +48,12 @@ namespace AllJoynUnity
 				alljoyn_busattachment_registerbuslistener(_busAttachment, listener.UnmanagedPtr);
 			}
 			
-			public Status FindAdvertisedName(string namePrefix)
+			public QStatus FindAdvertisedName(string namePrefix)
 			{
-				return (Status)alljoyn_busattachment_findadvertisedname(_busAttachment, namePrefix);
+				return alljoyn_busattachment_findadvertisedname(_busAttachment, namePrefix);
 			}
 			
-			public Status JoinSession(string sessionHost, ushort sessionPort, BusListener listener,
+			public QStatus JoinSession(string sessionHost, ushort sessionPort, BusListener listener,
 				out uint sessionId, SessionOpts opts)
 			{
 				IntPtr optsPtr = opts.UnmanagedPtr;
@@ -61,7 +61,15 @@ namespace AllJoynUnity
 				int qstatus = alljoyn_busattachment_joinsession(_busAttachment, sessionHost, sessionPort,
 					listener.UnmanagedPtr, ref sessionId_out, optsPtr);
 				sessionId = sessionId_out;
-				return (Status)qstatus;
+				return qstatus;
+			}
+			
+			public InterfaceDescription GetInterface(string name)
+			{
+				IntPtr iface = alljoyn_busattachment_getinterface(_busAttachment, name);
+				InterfaceDescription ret = (iface != IntPtr.Zero ? new InterfaceDescription(iface) : null);
+				
+				return ret;
 			}
 			
 			#region IDisposable
@@ -75,12 +83,6 @@ namespace AllJoynUnity
 			{
 				if(!_isDisposed)
 				{
-					if(disposing) 
-					{
-						// Code to dispose the managed resources
-						// held by the class
-					}
-					
 					alljoyn_busattachment_destroy(_busAttachment);
 					_busAttachment = IntPtr.Zero;
 				}
@@ -133,6 +135,20 @@ namespace AllJoynUnity
 				IntPtr listener,
 				ref uint sessionId,
 				IntPtr opts);
+			
+			[DllImport(DLL_IMPORT_TARGET)]
+			private extern static IntPtr alljoyn_busattachment_getinterface(IntPtr bus,
+				[MarshalAs(UnmanagedType.LPStr)] string name);
+			#endregion
+			
+			#region Internal Properties
+			internal IntPtr UnmanagedPtr
+			{
+				get
+				{
+					return _busAttachment;
+				}
+			}
 			#endregion
 			
 			#region Data

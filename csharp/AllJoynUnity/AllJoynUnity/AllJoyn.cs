@@ -30,226 +30,290 @@ namespace AllJoynUnity
 			LAN = 0x0010
 		}
 		
-		public enum Status : int
+		public class QStatus
 		{
-			ER_OK = 0x0 /**< Success. */,
-			ER_FAIL = 0x1 /**< Generic failure. */,
-			ER_UTF_CONVERSION_FAILED = 0x2 /**< Conversion between UTF bases failed. */,
-			ER_BUFFER_TOO_SMALL = 0x3 /**< Not enough space in buffer for operation. */,
-			ER_OS_ERROR = 0x4 /**< Underlying OS has indicated an error. */,
-			ER_OUT_OF_MEMORY = 0x5 /**< Failed to allocate memory. */,
-			ER_SOCKET_BIND_ERROR = 0x6 /**< Bind to IP address failed. */,
-			ER_INIT_FAILED = 0x7 /**< Initialization failed. */,
-			ER_WOULDBLOCK = 0x8 /**< An I/O attempt on non-blocking resource would block */,
-			ER_NOT_IMPLEMENTED = 0x9 /**< Feature not implemented */,
-			ER_TIMEOUT = 0xa /**< Operation timed out */,
-			ER_SOCK_OTHER_END_CLOSED = 0xb /**< Other end closed the socket */,
-			ER_BAD_ARG_1 = 0xc /**< Function call argument 1 is invalid */,
-			ER_BAD_ARG_2 = 0xd /**< Function call argument 2 is invalid */,
-			ER_BAD_ARG_3 = 0xe /**< Function call argument 3 is invalid */,
-			ER_BAD_ARG_4 = 0xf /**< Function call argument 4 is invalid */,
-			ER_BAD_ARG_5 = 0x10 /**< Function call argument 5 is invalid */,
-			ER_BAD_ARG_6 = 0x11 /**< Function call argument 6 is invalid */,
-			ER_BAD_ARG_7 = 0x12 /**< Function call argument 7 is invalid */,
-			ER_BAD_ARG_8 = 0x13 /**< Function call argument 8 is invalid */,
-			ER_INVALID_ADDRESS = 0x14 /**< Address is NULL or invalid */,
-			ER_INVALID_DATA = 0x15 /**< Generic invalid data error */,
-			ER_READ_ERROR = 0x16 /**< Generic read error */,
-			ER_WRITE_ERROR = 0x17 /**< Generic write error */,
-			ER_OPEN_FAILED = 0x18 /**< Generic open failure */,
-			ER_PARSE_ERROR = 0x19 /**< Generic parse failure */,
-			ER_END_OF_DATA = 0x1A /**< Generic EOD/EOF error */,
-			ER_CONN_REFUSED = 0x1B /**< Connection was refused because no one is listening */,
-			ER_BAD_ARG_COUNT = 0x1C /**< Incorrect number of arguments given to function call */,
-			ER_COMMON_ERRORS = 0x1000 /**< Error code block for the Common subsystem. */,
-			ER_STOPPING_THREAD = 0x1001 /**< Operation interrupted by ERThread stop signal. */,
-			ER_ALERTED_THREAD = 0x1002 /**< Operation interrupted by ERThread alert signal. */,
-			ER_XML_MALFORMED = 0x1003 /**< Cannot parse malformed XML */,
-			ER_AUTH_FAIL = 0x1004 /**< Authentication failed */,
-			ER_AUTH_USER_REJECT = 0x1005 /**< Authentication was rejected by user */,
-			ER_NO_SUCH_ALARM = 0x1006 /**< Attempt to reference non-existent timer alarm */,
-			ER_TIMER_FALLBEHIND = 0x1007 /**< A timer thread is missing scheduled alarm times */,
-			ER_SSL_ERRORS = 0x1008 /**< Error code block for SSL subsystem */,
-			ER_SSL_INIT = 0x1009 /**< SSL initialization failed. */,
-			ER_SSL_CONNECT = 0x100a /**< Failed to connect to remote host using SSL */,
-			ER_SSL_VERIFY = 0x100b /**< Failed to verify identity of SSL destination */,
-			ER_EXTERNAL_THREAD = 0x100c /**< Operation not supported on external thread wrapper */,
-			ER_CRYPTO_ERROR = 0x100d /**< Non-specific error in the crypto subsystem */,
-			ER_CRYPTO_TRUNCATED = 0x100e /**< Not enough room for key */,
-			ER_CRYPTO_KEY_UNAVAILABLE = 0x100f /**< No key to return */,
-			ER_BAD_HOSTNAME = 0x1010 /**< Cannot lookup hostname */,
-			ER_CRYPTO_KEY_UNUSABLE = 0x1011 /**< Key cannot be used */,
-			ER_EMPTY_KEY_BLOB = 0x1012 /**< Key blob is empty */,
-			ER_CORRUPT_KEYBLOB = 0x1013 /**< Key blob is corrupted */,
-			ER_INVALID_KEY_ENCODING = 0x1014 /**< Encoded key is not valid */,
-			ER_DEAD_THREAD = 0x1015 /**< Operation not allowed thread is dead */,
-			ER_THREAD_RUNNING = 0x1016 /**< Cannot start a thread that is already running */,
-			ER_THREAD_STOPPING = 0x1017 /**< Cannot start a thread that is already stopping */,
-			ER_BAD_STRING_ENCODING = 0x1018 /**< Encoded string did not have the expected format or contents */,
-			ER_CRYPTO_INSUFFICIENT_SECURITY = 0x1019 /**< Crypto algorithm parameters do not provide sufficient security */,
-			ER_CRYPTO_ILLEGAL_PARAMETERS = 0x101a /**< Crypto algorithm parameter value is illegal */,
-			ER_CRYPTO_HASH_UNINITIALIZED = 0x101b /**< Cryptographic hash function must be initialized */,
-			ER_THREAD_NO_WAIT = 0x101c /**< Thread cannot be blocked by a WAIT or SLEEP call */,
-			ER_TIMER_EXITING = 0x101d /**< Cannot add an alarm to a timer that is exiting */,
-			ER_INVALID_GUID = 0x101e /**< String is not a hex encoded GUID string */,
-			ER_NONE = 0xffff /**< No error code to report */,
-			ER_BUS_ERRORS = 0x9000 /**< Error code block for ALLJOYN wire protocol */,
-			ER_BUS_READ_ERROR = 0x9001 /**< Error attempting to read */,
-			ER_BUS_WRITE_ERROR = 0x9002 /**< Error attempting to write */,
-			ER_BUS_BAD_VALUE_TYPE = 0x9003 /**< Read an invalid value type */,
-			ER_BUS_BAD_HEADER_FIELD = 0x9004 /**< Read an invalid header field */,
-			ER_BUS_BAD_SIGNATURE = 0x9005 /**< Signature was badly formed */,
-			ER_BUS_BAD_OBJ_PATH = 0x9006 /**< Object path contained an illegal character */,
-			ER_BUS_BAD_MEMBER_NAME = 0x9007 /**< A member name contained an illegal character */,
-			ER_BUS_BAD_INTERFACE_NAME = 0x9008 /**< An interface name contained an illegal character */,
-			ER_BUS_BAD_ERROR_NAME = 0x9009 /**< An error name contained an illegal character */,
-			ER_BUS_BAD_BUS_NAME = 0x900a /**< A bus name contained an illegal character */,
-			ER_BUS_NAME_TOO_LONG = 0x900b /**< A name exceeded the permitted length */,
-			ER_BUS_BAD_LENGTH = 0x900c /**< Length of an array was not a multiple of the array element size */,
-			ER_BUS_BAD_VALUE = 0x900d /**< Parsed value in a message was invalid (for example: boolean > 1)  */,
-			ER_BUS_BAD_HDR_FLAGS = 0x900e /**< Unknown header flags */,
-			ER_BUS_BAD_BODY_LEN = 0x900f /**< Body length was to long or too short */,
-			ER_BUS_BAD_HEADER_LEN = 0x9010 /**< Header length was to long or too short */,
-			ER_BUS_UNKNOWN_SERIAL = 0x9011 /**< Serial number in a method response was unknown */,
-			ER_BUS_UNKNOWN_PATH = 0x9012 /**< Path in a method call or signal was unknown */,
-			ER_BUS_UNKNOWN_INTERFACE = 0x9013 /**< Interface in a method call or signal was unknown */,
-			ER_BUS_ESTABLISH_FAILED = 0x9014 /**< Failed to establish a connection */,
-			ER_BUS_UNEXPECTED_SIGNATURE = 0x9015 /**< Signature in message was not what was expected */,
-			ER_BUS_INTERFACE_MISSING = 0x9016 /**< Interface header field is missing */,
-			ER_BUS_PATH_MISSING = 0x9017 /**< Object path header field is missing */,
-			ER_BUS_MEMBER_MISSING = 0x9018 /**< Member header field is missing */,
-			ER_BUS_REPLY_SERIAL_MISSING = 0x9019 /**< Reply-Serial header field is missing */,
-			ER_BUS_ERROR_NAME_MISSING = 0x901a /**< Error Name header field is missing */,
-			ER_BUS_INTERFACE_NO_SUCH_MEMBER = 0x901b /**< Interface does not have the requested member */,
-			ER_BUS_NO_SUCH_OBJECT = 0x901c /**< Object does not exist */,
-			ER_BUS_OBJECT_NO_SUCH_MEMBER = 0x901d /**< Object does not have the requested member (on any interface) */,
-			ER_BUS_OBJECT_NO_SUCH_INTERFACE = 0x901e /**< Object does not have the requested interface */,
-			ER_BUS_NO_SUCH_INTERFACE = 0x901f /**< Requested interface does not exist */,
-			ER_BUS_MEMBER_NO_SUCH_SIGNATURE = 0x9020 /**< Member exists but does not have the requested signature */,
-			ER_BUS_NOT_NUL_TERMINATED = 0x9021 /**< A string or signature was not NUL terminated */,
-			ER_BUS_NO_SUCH_PROPERTY = 0x9022 /**< No such property for a GET or SET operation  */,
-			ER_BUS_SET_WRONG_SIGNATURE = 0x9023 /**< Attempt to set a property value with the wrong signature */,
-			ER_BUS_PROPERTY_VALUE_NOT_SET = 0x9024 /**< Attempt to get a property whose value has not been set */,
-			ER_BUS_PROPERTY_ACCESS_DENIED = 0x9025 /**< Attempt to set or get a property failed due to access rights */,
-			ER_BUS_NO_TRANSPORTS = 0x9026 /**< No physical message transports were specified */,
-			ER_BUS_BAD_TRANSPORT_ARGS = 0x9027 /**< Missing or badly formatted transports args specified */,
-			ER_BUS_NO_ROUTE = 0x9028 /**< Message cannot be routed to destination */,
-			ER_BUS_NO_ENDPOINT = 0x9029 /**< An endpoint with given name cannot be found */,
-			ER_BUS_BAD_SEND_PARAMETER = 0x902a /**< Bad parameter in send message call */,
-			ER_BUS_UNMATCHED_REPLY_SERIAL = 0x902b /**< Serial number in method call reply message did not match any method calls */,
-			ER_BUS_BAD_SENDER_ID = 0x902c /**< Sender identifier is invalid */,
-			ER_BUS_TRANSPORT_NOT_STARTED = 0x902d /**< Attempt to send on a transport that has not been started */,
-			ER_BUS_EMPTY_MESSAGE = 0x902e /**< Attempt to deliver an empty message */,
-			ER_BUS_NOT_OWNER = 0x902f /**< A bus name operation was not permitted because sender does not own name */,
-			ER_BUS_SET_PROPERTY_REJECTED = 0x9030 /**< Application rejected a request to set a property */,
-			ER_BUS_CONNECT_FAILED = 0x9031 /**< Connection failed */,
-			ER_BUS_REPLY_IS_ERROR_MESSAGE = 0x9032 /**< Response from a method call was an ERROR message */,
-			ER_BUS_NOT_AUTHENTICATING = 0x9033 /**< Not in an authentication conversation */,
-			ER_BUS_NO_LISTENER = 0x9034 /**< A listener is required to implement the requested function */,
-			ER_BUS_BT_TRANSPORT_ERROR = 0x9035 /**< The Bluetooth transport reported an error */,
-			ER_BUS_NOT_ALLOWED = 0x9036 /**< The operation attempted is not allowed */,
-			ER_BUS_WRITE_QUEUE_FULL = 0x9037 /**< Write failed because write queue is full */,
-			ER_BUS_ENDPOINT_CLOSING = 0x9038 /**< Operation not permitted on endpoint in process of closing */,
-			ER_BUS_INTERFACE_MISMATCH = 0x9039 /**< Received two conflicting definitions for the same interface */,
-			ER_BUS_MEMBER_ALREADY_EXISTS = 0x903a /**< Attempt to add a member to an interface that already exists */,
-			ER_BUS_PROPERTY_ALREADY_EXISTS = 0x903b /**< Attempt to add a property to an interface that already exists */,
-			ER_BUS_IFACE_ALREADY_EXISTS = 0x903c /**< Attempt to add an interface to an object that already exists */,
-			ER_BUS_ERROR_RESPONSE = 0x903d /**< Received an error response to a method call */,
-			ER_BUS_BAD_XML = 0x903e /**< XML data is improperly formatted */,
-			ER_BUS_BAD_CHILD_PATH = 0x903f /**< The path of a child object is incorrect given it's parent's path */,
-			ER_BUS_OBJ_ALREADY_EXISTS = 0x9040 /**< Attempt to add a RemoteObject child that already exists */,
-			ER_BUS_OBJ_NOT_FOUND = 0x9041 /**< Object with given path does not exist */,
-			ER_BUS_CANNOT_EXPAND_MESSAGE = 0x9042 /**< Expansion information for a compressed message is not available */,
-			ER_BUS_NOT_COMPRESSED = 0x9043 /**< Attempt to expand a message that is not compressed */,
-			ER_BUS_ALREADY_CONNECTED = 0x9044 /**< Attempt to connect to a bus which is already connected */,
-			ER_BUS_NOT_CONNECTED = 0x9045 /**< Attempt to use a bus attachment that is not connected to a bus daemon */,
-			ER_BUS_ALREADY_LISTENING = 0x9046 /**< Attempt to listen on a bus address which is already being listened on */,
-			ER_BUS_KEY_UNAVAILABLE = 0x9047 /**< The request key is not available */,
-			ER_BUS_TRUNCATED = 0x9048 /**< Insufficient memory to copy data */,
-			ER_BUS_KEY_STORE_NOT_LOADED = 0x9049 /**< Accessing the key store before it is loaded */,
-			ER_BUS_NO_AUTHENTICATION_MECHANISM = 0x904a /**< There is no authentication mechanism */,
-			ER_BUS_BUS_ALREADY_STARTED = 0x904b /**< Bus has already been started */,
-			ER_BUS_BUS_NOT_STARTED = 0x904c /**< Bus has not yet been started */,
-			ER_BUS_KEYBLOB_OP_INVALID = 0x904d /**< The operation requested cannot be performed using this key blob */,
-			ER_BUS_INVALID_HEADER_CHECKSUM = 0x904e /**< Invalid header checksum in an encrypted message */,
-			ER_BUS_MESSAGE_NOT_ENCRYPTED = 0x904f /**< Security policy requires the message to be encrypted */,
-			ER_BUS_INVALID_HEADER_SERIAL = 0x9050 /**< Serial number in message header is invalid */,
-			ER_BUS_TIME_TO_LIVE_EXPIRED = 0x9051 /**< Message time-to-live has expired */,
-			ER_BUS_HDR_EXPANSION_INVALID = 0x9052 /**< Something is wrong with a header expansion */,
-			ER_BUS_MISSING_COMPRESSION_TOKEN = 0x9053 /**< Compressed headers require a compression token */,
-			ER_BUS_NO_PEER_GUID = 0x9054 /**< There is no GUID for this peer */,
-			ER_BUS_MESSAGE_DECRYPTION_FAILED = 0x9055 /**< Message decryption failed */,
-			ER_BUS_SECURITY_FATAL = 0x9056 /**< A fatal security failure */,
-			ER_BUS_KEY_EXPIRED = 0x9057 /**< An encryption key has expired */,
-			ER_BUS_CORRUPT_KEYSTORE = 0x9058 /**< Key store is corrupt */,
-			ER_BUS_NO_CALL_FOR_REPLY = 0x9059 /**< A reply only allowed in response to a method call */,
-			ER_BUS_NOT_A_COMPLETE_TYPE = 0x905a /**< Signature must be a single complete type */,
-			ER_BUS_POLICY_VIOLATION = 0x905b /**< Message does not meet policy restrictions */,
-			ER_BUS_NO_SUCH_SERVICE = 0x905c /**< Service name is unknown */,
-			ER_BUS_TRANSPORT_NOT_AVAILABLE = 0x905d /**< Transport cannot be used due to underlying mechanism disabled by OS */,
-			ER_BUS_INVALID_AUTH_MECHANISM = 0x905e /**< Authentication mechanism is not valid */,
-			ER_BUS_KEYSTORE_VERSION_MISMATCH = 0x905f /**< Key store has wrong version number */,
-			ER_BUS_BLOCKING_CALL_NOT_ALLOWED = 0x9060 /**< A synchronous method call from within handler is not permitted. */,
-			ER_BUS_SIGNATURE_MISMATCH = 0x9061 /**< MsgArg(s) do not match signature. */,
-			ER_BUS_STOPPING = 0x9062 /**< The bus is stopping. */,
-			ER_BUS_METHOD_CALL_ABORTED = 0x9063 /**< The method call was aborted. */,
-			ER_BUS_CANNOT_ADD_INTERFACE = 0x9064 /**< An interface cannot be added to an object that is already registered. */,
-			ER_BUS_CANNOT_ADD_HANDLER = 0x9065 /**< A method handler cannot be added to an object that is already registered. */,
-			ER_BUS_KEYSTORE_NOT_LOADED = 0x9066 /**< Key store has not been loaded */,
-			ER_BUS_NO_SUCH_HANDLE = 0x906b /**< Handle is not in the handle table */,
-			ER_BUS_HANDLES_NOT_ENABLED = 0x906c /**< Passing of handles is not enabled for this connection */,
-			ER_BUS_HANDLES_MISMATCH = 0x906d /**< Message had more handles than expected */,
-			ER_BT_MAX_CONNECTIONS_USED = 0x906e /**< Maximum Bluetooth connections already in use */,
-			ER_BUS_NO_SESSION = 0x906f /**< Session id is not valid */,
-			ER_BUS_ELEMENT_NOT_FOUND = 0x9070 /**< Dictionary element was not found */,
-			ER_BUS_NOT_A_DICTIONARY = 0x9071 /**< MsgArg was not an array of dictionary elements */,
-			ER_BUS_WAIT_FAILED = 0x9072 /**< Wait failed */,
-			ER_BUS_BAD_SESSION_OPTS = 0x9074 /**< Session options are bad or incompatible */,
-			ER_BUS_CONNECTION_REJECTED = 0x9075 /**< Incoming connection rejected */,
-			ER_DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER = 0x9076 /**< RequestName reply: Name was successfully obtained */,
-			ER_DBUS_REQUEST_NAME_REPLY_IN_QUEUE = 0x9077 /**< RequestName reply: Name is already owned, request for name has been queued */,
-			ER_DBUS_REQUEST_NAME_REPLY_EXISTS = 0x9078 /**< RequestName reply: Name is already owned and DO_NOT_QUEUE was specified in request */,
-			ER_DBUS_REQUEST_NAME_REPLY_ALREADY_OWNER = 0x9079 /**< RequestName reply: Name is already owned by this endpoint */,
-			ER_DBUS_RELEASE_NAME_REPLY_RELEASED = 0x907a /**< ReleaseName reply: Name was released */,
-			ER_DBUS_RELEASE_NAME_REPLY_NON_EXISTENT = 0x907b /**<  ReleaseName reply: Name does not exist */,
-			ER_DBUS_RELEASE_NAME_REPLY_NOT_OWNER = 0x907c /**< ReleaseName reply: Request to release name that is not owned by this endpoint */,
-			ER_DBUS_START_REPLY_ALREADY_RUNNING = 0x907e /**< StartServiceByName reply: Service is already running */,
-			ER_ALLJOYN_BINDSESSIONPORT_REPLY_ALREADY_EXISTS = 0x9080 /**< BindSessionPort reply: SessionPort already exists */,
-			ER_ALLJOYN_BINDSESSIONPORT_REPLY_FAILED = 0x9081 /**< BindSessionPort reply: Failed */,
-			ER_ALLJOYN_JOINSESSION_REPLY_NO_SESSION = 0x9083 /**< JoinSession reply: Session with given name does not exist */,
-			ER_ALLJOYN_JOINSESSION_REPLY_UNREACHABLE = 0x9084 /**< JoinSession reply: Failed to find suitable transport */,
-			ER_ALLJOYN_JOINSESSION_REPLY_CONNECT_FAILED = 0x9085 /**< JoinSession reply: Connect to advertised address */,
-			ER_ALLJOYN_JOINSESSION_REPLY_REJECTED = 0x9086 /**< JoinSession reply: The session creator rejected the join req */,
-			ER_ALLJOYN_JOINSESSION_REPLY_BAD_SESSION_OPTS = 0x9087 /**< JoinSession reply: Failed due to session option incompatibilities */,
-			ER_ALLJOYN_JOINSESSION_REPLY_FAILED = 0x9088 /**< JoinSession reply: Failed for unknown reason */,
-			ER_ALLJOYN_LEAVESESSION_REPLY_NO_SESSION = 0x908a /**< LeaveSession reply: Session with given name does not exist */,
-			ER_ALLJOYN_LEAVESESSION_REPLY_FAILED = 0x908b /**< LeaveSession reply: Failed for unspecified reason */,
-			ER_ALLJOYN_ADVERTISENAME_REPLY_ALREADY_ADVERTISING = 0x908d /**< AdvertiseName reply: This endpoint is already advertising this name */,
-			ER_ALLJOYN_ADVERTISENAME_REPLY_FAILED = 0x908e /**< AdvertiseName reply: Advertise failed */,
-			ER_ALLJOYN_CANCELADVERTISENAME_REPLY_FAILED = 0x9090 /**< CancelAdvertiseName reply: Advertise failed */,
-			ER_ALLJOYN_FINDADVERTISEDNAME_REPLY_ALREADY_DISCOVERING = 0x9092 /**< FindAdvertisedName reply: This enpoint is already discovering this name */,
-			ER_ALLJOYN_FINDADVERTISEDNAME_REPLY_FAILED = 0x9093 /**< FindAdvertisedName reply: Failed */,
-			ER_ALLJOYN_CANCELFINDADVERTISEDNAME_REPLY_FAILED = 0x9095 /**< CancelFindAdvertisedName reply: Failed */,
-			ER_BUS_UNEXPECTED_DISPOSITION = 0x9096 /**< An unexpected disposition was returned and has been treated as an error */,
-			ER_BUS_INTERFACE_ACTIVATED = 0x9097 /**< An InterfaceDescription cannot be modified once activated */,
-			ER_ALLJOYN_UNBINDSESSIONPORT_REPLY_BAD_PORT = 0x9098 /**< UnbindSessionPort reply: SessionPort does not exist */,
-			ER_ALLJOYN_UNBINDSESSIONPORT_REPLY_FAILED = 0x9099 /**< UnbindSessionPort reply: Failed */,
-			ER_ALLJOYN_BINDSESSIONPORT_REPLY_INVALID_OPTS = 0x909a /**< BindSessionPort reply: SessionOpts are invalid */,
-			ER_ALLJOYN_JOINSESSION_REPLY_ALREADY_JOINED = 0x909b /**< JoinSession reply: Caller has already joined the session */,
-			ER_BUS_SELF_CONNECT = 0x909c /**< Received BusHello from self */,
-			ER_BUS_SECURITY_NOT_ENABLED = 0x909d /**< Security is not enabled for this bus attachment */,
-			ER_BUS_LISTENER_ALREADY_SET = 0x909e /**< A listener has alread been set */,
-			ER_BUS_PEER_AUTH_VERSION_MISMATCH = 0x909f /**< Incompatible peer authentication version numbers */,
-			ER_ALLJOYN_SETLINKTIMEOUT_REPLY_NOT_SUPPORTED = 0x90a0 /**< Local daemon does not support SetLinkTimeout */,
-			ER_ALLJOYN_SETLINKTIMEOUT_REPLY_NO_DEST_SUPPORT = 0x90a1 /**< SetLinkTimeout not supported by destination */,
-			ER_ALLJOYN_SETLINKTIMEOUT_REPLY_FAILED = 0x90a2 /**< SetLinkTimeout failed */,
-			ER_ALLJOYN_ACCESS_PERMISSION_WARNING = 0x90a3 /**< No permission to use Wifi/Bluetooth */,
-			ER_ALLJOYN_ACCESS_PERMISSION_ERROR = 0x90a4 /**< No permission to access peer service */
-		}
-		
-		public static string StatusString(Status status)
-		{
-			return Marshal.PtrToStringAuto(QCC_StatusText((int)status));
+			private QStatus(int x)
+			{
+				value = x;
+			}
+			
+			public static implicit operator QStatus(int x)
+			{
+				return new QStatus(x);
+			}
+			
+			public static implicit operator int(QStatus x)
+			{
+				return x.value;
+			}
+			
+			public static bool operator true(QStatus x)
+			{
+				return (x == OK);
+			}
+			
+			public static bool operator false(QStatus x)
+			{
+				return (x != OK);
+			}
+			
+			public static bool operator ==(QStatus x, QStatus y)
+			{
+				return x.value == y.value;
+			}
+			
+			public override bool Equals(object o) 
+			{
+				try
+				{
+					return (this == (QStatus)o);
+				}
+				catch
+				{
+					return false;
+				}
+			}
+			
+			public override int GetHashCode()
+			{
+				return value;
+			}
+			
+			public override string ToString()
+			{
+				return Marshal.PtrToStringAuto(QCC_StatusText(value));
+			}
+			
+			public static implicit operator string(QStatus x)
+			{
+				return x.value.ToString();
+			}
+			
+			public static bool operator !=(QStatus x, QStatus y)
+			{
+				return x.value != y.value;
+			}
+			
+			public static bool operator !(QStatus x)
+			{
+				return (x != OK);
+			}
+			
+			int value;
+			
+			public static readonly QStatus OK = new QStatus(0x0);
+			public static readonly QStatus FAIL = new QStatus(0x1);
+			public static readonly QStatus UTF_CONVERSION_FAILED = new QStatus(0x2);
+			public static readonly QStatus BUFFER_TOO_SMALL = new QStatus(0x3);
+			public static readonly QStatus OS_ERROR = new QStatus(0x4);
+			public static readonly QStatus OUT_OF_MEMORY = new QStatus(0x5);
+			public static readonly QStatus SOCKET_BIND_ERROR = new QStatus(0x6);
+			public static readonly QStatus INIT_FAILED = new QStatus(0x7);
+			public static readonly QStatus WOULDBLOCK = new QStatus(0x8);
+			public static readonly QStatus NOT_IMPLEMENTED = new QStatus(0x9);
+			public static readonly QStatus TIMEOUT = new QStatus(0xa);
+			public static readonly QStatus SOCK_OTHER_END_CLOSED = new QStatus(0xb);
+			public static readonly QStatus BAD_ARG_1 = new QStatus(0xc);
+			public static readonly QStatus BAD_ARG_2 = new QStatus(0xd);
+			public static readonly QStatus BAD_ARG_3 = new QStatus(0xe);
+			public static readonly QStatus BAD_ARG_4 = new QStatus(0xf);
+			public static readonly QStatus BAD_ARG_5 = new QStatus(0x10);
+			public static readonly QStatus BAD_ARG_6 = new QStatus(0x11);
+			public static readonly QStatus BAD_ARG_7 = new QStatus(0x12);
+			public static readonly QStatus BAD_ARG_8 = new QStatus(0x13);
+			public static readonly QStatus INVALID_ADDRESS = new QStatus(0x14);
+			public static readonly QStatus INVALID_DATA = new QStatus(0x15);
+			public static readonly QStatus READ_ERROR = new QStatus(0x16);
+			public static readonly QStatus WRITE_ERROR = new QStatus(0x17);
+			public static readonly QStatus OPEN_FAILED = new QStatus(0x18);
+			public static readonly QStatus PARSE_ERROR = new QStatus(0x19);
+			public static readonly QStatus END_OF_DATA = new QStatus(0x1A);
+			public static readonly QStatus CONN_REFUSED = new QStatus(0x1B);
+			public static readonly QStatus BAD_ARG_COUNT = new QStatus(0x1C);
+			public static readonly QStatus COMMON_ERRORS = new QStatus(0x1000);
+			public static readonly QStatus STOPPING_THREAD = new QStatus(0x1001);
+			public static readonly QStatus ALERTED_THREAD = new QStatus(0x1002);
+			public static readonly QStatus XML_MALFORMED = new QStatus(0x1003);
+			public static readonly QStatus AUTH_FAIL = new QStatus(0x1004);
+			public static readonly QStatus AUTH_USER_REJECT = new QStatus(0x1005);
+			public static readonly QStatus NO_SUCH_ALARM = new QStatus(0x1006);
+			public static readonly QStatus TIMER_FALLBEHIND = new QStatus(0x1007);
+			public static readonly QStatus SSL_ERRORS = new QStatus(0x1008);
+			public static readonly QStatus SSL_INIT = new QStatus(0x1009);
+			public static readonly QStatus SSL_CONNECT = new QStatus(0x100a);
+			public static readonly QStatus SSL_VERIFY = new QStatus(0x100b);
+			public static readonly QStatus EXTERNAL_THREAD = new QStatus(0x100c);
+			public static readonly QStatus CRYPTO_ERROR = new QStatus(0x100d);
+			public static readonly QStatus CRYPTO_TRUNCATED = new QStatus(0x100e);
+			public static readonly QStatus CRYPTO_KEY_UNAVAILABLE = new QStatus(0x100f);
+			public static readonly QStatus BAD_HOSTNAME = new QStatus(0x1010);
+			public static readonly QStatus CRYPTO_KEY_UNUSABLE = new QStatus(0x1011);
+			public static readonly QStatus EMPTY_KEY_BLOB = new QStatus(0x1012);
+			public static readonly QStatus CORRUPT_KEYBLOB = new QStatus(0x1013);
+			public static readonly QStatus INVALID_KEY_ENCODING = new QStatus(0x1014);
+			public static readonly QStatus DEAD_THREAD = new QStatus(0x1015);
+			public static readonly QStatus THREAD_RUNNING = new QStatus(0x1016);
+			public static readonly QStatus THREAD_STOPPING = new QStatus(0x1017);
+			public static readonly QStatus BAD_STRING_ENCODING = new QStatus(0x1018);
+			public static readonly QStatus CRYPTO_INSUFFICIENT_SECURITY = new QStatus(0x1019);
+			public static readonly QStatus CRYPTO_ILLEGAL_PARAMETERS = new QStatus(0x101a);
+			public static readonly QStatus CRYPTO_HASH_UNINITIALIZED = new QStatus(0x101b);
+			public static readonly QStatus THREAD_NO_WAIT = new QStatus(0x101c);
+			public static readonly QStatus TIMER_EXITING = new QStatus(0x101d);
+			public static readonly QStatus INVALID_GUID = new QStatus(0x101e);
+			public static readonly QStatus NONE = new QStatus(0xffff);
+			public static readonly QStatus BUS_ERRORS = new QStatus(0x9000);
+			public static readonly QStatus BUS_READ_ERROR = new QStatus(0x9001);
+			public static readonly QStatus BUS_WRITE_ERROR = new QStatus(0x9002);
+			public static readonly QStatus BUS_BAD_VALUE_TYPE = new QStatus(0x9003);
+			public static readonly QStatus BUS_BAD_HEADER_FIELD = new QStatus(0x9004);
+			public static readonly QStatus BUS_BAD_SIGNATURE = new QStatus(0x9005);
+			public static readonly QStatus BUS_BAD_OBJ_PATH = new QStatus(0x9006);
+			public static readonly QStatus BUS_BAD_MEMBER_NAME = new QStatus(0x9007);
+			public static readonly QStatus BUS_BAD_INTERFACE_NAME = new QStatus(0x9008);
+			public static readonly QStatus BUS_BAD_ERROR_NAME = new QStatus(0x9009);
+			public static readonly QStatus BUS_BAD_BUS_NAME = new QStatus(0x900a);
+			public static readonly QStatus BUS_NAME_TOO_LONG = new QStatus(0x900b);
+			public static readonly QStatus BUS_BAD_LENGTH = new QStatus(0x900c);
+			public static readonly QStatus BUS_BAD_VALUE = new QStatus(0x900d);
+			public static readonly QStatus BUS_BAD_HDR_FLAGS = new QStatus(0x900e);
+			public static readonly QStatus BUS_BAD_BODY_LEN = new QStatus(0x900f);
+			public static readonly QStatus BUS_BAD_HEADER_LEN = new QStatus(0x9010);
+			public static readonly QStatus BUS_UNKNOWN_SERIAL = new QStatus(0x9011);
+			public static readonly QStatus BUS_UNKNOWN_PATH = new QStatus(0x9012);
+			public static readonly QStatus BUS_UNKNOWN_INTERFACE = new QStatus(0x9013);
+			public static readonly QStatus BUS_ESTABLISH_FAILED = new QStatus(0x9014);
+			public static readonly QStatus BUS_UNEXPECTED_SIGNATURE = new QStatus(0x9015);
+			public static readonly QStatus BUS_INTERFACE_MISSING = new QStatus(0x9016);
+			public static readonly QStatus BUS_PATH_MISSING = new QStatus(0x9017);
+			public static readonly QStatus BUS_MEMBER_MISSING = new QStatus(0x9018);
+			public static readonly QStatus BUS_REPLY_SERIAL_MISSING = new QStatus(0x9019);
+			public static readonly QStatus BUS_ERROR_NAME_MISSING = new QStatus(0x901a);
+			public static readonly QStatus BUS_INTERFACE_NO_SUCH_MEMBER = new QStatus(0x901b);
+			public static readonly QStatus BUS_NO_SUCH_OBJECT = new QStatus(0x901c);
+			public static readonly QStatus BUS_OBJECT_NO_SUCH_MEMBER = new QStatus(0x901d);
+			public static readonly QStatus BUS_OBJECT_NO_SUCH_INTERFACE = new QStatus(0x901e);
+			public static readonly QStatus BUS_NO_SUCH_INTERFACE = new QStatus(0x901f);
+			public static readonly QStatus BUS_MEMBER_NO_SUCH_SIGNATURE = new QStatus(0x9020);
+			public static readonly QStatus BUS_NOT_NUL_TERMINATED = new QStatus(0x9021);
+			public static readonly QStatus BUS_NO_SUCH_PROPERTY = new QStatus(0x9022);
+			public static readonly QStatus BUS_SET_WRONG_SIGNATURE = new QStatus(0x9023);
+			public static readonly QStatus BUS_PROPERTY_VALUE_NOT_SET = new QStatus(0x9024);
+			public static readonly QStatus BUS_PROPERTY_ACCESS_DENIED = new QStatus(0x9025);
+			public static readonly QStatus BUS_NO_TRANSPORTS = new QStatus(0x9026);
+			public static readonly QStatus BUS_BAD_TRANSPORT_ARGS = new QStatus(0x9027);
+			public static readonly QStatus BUS_NO_ROUTE = new QStatus(0x9028);
+			public static readonly QStatus BUS_NO_ENDPOINT = new QStatus(0x9029);
+			public static readonly QStatus BUS_BAD_SEND_PARAMETER = new QStatus(0x902a);
+			public static readonly QStatus BUS_UNMATCHED_REPLY_SERIAL = new QStatus(0x902b);
+			public static readonly QStatus BUS_BAD_SENDER_ID = new QStatus(0x902c);
+			public static readonly QStatus BUS_TRANSPORT_NOT_STARTED = new QStatus(0x902d);
+			public static readonly QStatus BUS_EMPTY_MESSAGE = new QStatus(0x902e);
+			public static readonly QStatus BUS_NOT_OWNER = new QStatus(0x902f);
+			public static readonly QStatus BUS_SET_PROPERTY_REJECTED = new QStatus(0x9030);
+			public static readonly QStatus BUS_CONNECT_FAILED = new QStatus(0x9031);
+			public static readonly QStatus BUS_REPLY_IS_ERROR_MESSAGE = new QStatus(0x9032);
+			public static readonly QStatus BUS_NOT_AUTHENTICATING = new QStatus(0x9033);
+			public static readonly QStatus BUS_NO_LISTENER = new QStatus(0x9034);
+			public static readonly QStatus BUS_BT_TRANSPORT_ERROR = new QStatus(0x9035);
+			public static readonly QStatus BUS_NOT_ALLOWED = new QStatus(0x9036);
+			public static readonly QStatus BUS_WRITE_QUEUE_FULL = new QStatus(0x9037);
+			public static readonly QStatus BUS_ENDPOINT_CLOSING = new QStatus(0x9038);
+			public static readonly QStatus BUS_INTERFACE_MISMATCH = new QStatus(0x9039);
+			public static readonly QStatus BUS_MEMBER_ALREADY_EXISTS = new QStatus(0x903a);
+			public static readonly QStatus BUS_PROPERTY_ALREADY_EXISTS = new QStatus(0x903b);
+			public static readonly QStatus BUS_IFACE_ALREADY_EXISTS = new QStatus(0x903c);
+			public static readonly QStatus BUS_ERROR_RESPONSE = new QStatus(0x903d);
+			public static readonly QStatus BUS_BAD_XML = new QStatus(0x903e);
+			public static readonly QStatus BUS_BAD_CHILD_PATH = new QStatus(0x903f);
+			public static readonly QStatus BUS_OBJ_ALREADY_EXISTS = new QStatus(0x9040);
+			public static readonly QStatus BUS_OBJ_NOT_FOUND = new QStatus(0x9041);
+			public static readonly QStatus BUS_CANNOT_EXPAND_MESSAGE = new QStatus(0x9042);
+			public static readonly QStatus BUS_NOT_COMPRESSED = new QStatus(0x9043);
+			public static readonly QStatus BUS_ALREADY_CONNECTED = new QStatus(0x9044);
+			public static readonly QStatus BUS_NOT_CONNECTED = new QStatus(0x9045);
+			public static readonly QStatus BUS_ALREADY_LISTENING = new QStatus(0x9046);
+			public static readonly QStatus BUS_KEY_UNAVAILABLE = new QStatus(0x9047);
+			public static readonly QStatus BUS_TRUNCATED = new QStatus(0x9048);
+			public static readonly QStatus BUS_KEY_STORE_NOT_LOADED = new QStatus(0x9049);
+			public static readonly QStatus BUS_NO_AUTHENTICATION_MECHANISM = new QStatus(0x904a);
+			public static readonly QStatus BUS_BUS_ALREADY_STARTED = new QStatus(0x904b);
+			public static readonly QStatus BUS_BUS_NOT_STARTED = new QStatus(0x904c);
+			public static readonly QStatus BUS_KEYBLOB_OP_INVALID = new QStatus(0x904d);
+			public static readonly QStatus BUS_INVALID_HEADER_CHECKSUM = new QStatus(0x904e);
+			public static readonly QStatus BUS_MESSAGE_NOT_ENCRYPTED = new QStatus(0x904f);
+			public static readonly QStatus BUS_INVALID_HEADER_SERIAL = new QStatus(0x9050);
+			public static readonly QStatus BUS_TIME_TO_LIVE_EXPIRED = new QStatus(0x9051);
+			public static readonly QStatus BUS_HDR_EXPANSION_INVALID = new QStatus(0x9052);
+			public static readonly QStatus BUS_MISSING_COMPRESSION_TOKEN = new QStatus(0x9053);
+			public static readonly QStatus BUS_NO_PEER_GUID = new QStatus(0x9054);
+			public static readonly QStatus BUS_MESSAGE_DECRYPTION_FAILED = new QStatus(0x9055);
+			public static readonly QStatus BUS_SECURITY_FATAL = new QStatus(0x9056);
+			public static readonly QStatus BUS_KEY_EXPIRED = new QStatus(0x9057);
+			public static readonly QStatus BUS_CORRUPT_KEYSTORE = new QStatus(0x9058);
+			public static readonly QStatus BUS_NO_CALL_FOR_REPLY = new QStatus(0x9059);
+			public static readonly QStatus BUS_NOT_A_COMPLETE_TYPE = new QStatus(0x905a);
+			public static readonly QStatus BUS_POLICY_VIOLATION = new QStatus(0x905b);
+			public static readonly QStatus BUS_NO_SUCH_SERVICE = new QStatus(0x905c);
+			public static readonly QStatus BUS_TRANSPORT_NOT_AVAILABLE = new QStatus(0x905d);
+			public static readonly QStatus BUS_INVALID_AUTH_MECHANISM = new QStatus(0x905e);
+			public static readonly QStatus BUS_KEYSTORE_VERSION_MISMATCH = new QStatus(0x905f);
+			public static readonly QStatus BUS_BLOCKING_CALL_NOT_ALLOWED = new QStatus(0x9060);
+			public static readonly QStatus BUS_SIGNATURE_MISMATCH = new QStatus(0x9061);
+			public static readonly QStatus BUS_STOPPING = new QStatus(0x9062);
+			public static readonly QStatus BUS_METHOD_CALL_ABORTED = new QStatus(0x9063);
+			public static readonly QStatus BUS_CANNOT_ADD_INTERFACE = new QStatus(0x9064);
+			public static readonly QStatus BUS_CANNOT_ADD_HANDLER = new QStatus(0x9065);
+			public static readonly QStatus BUS_KEYSTORE_NOT_LOADED = new QStatus(0x9066);
+			public static readonly QStatus BUS_NO_SUCH_HANDLE = new QStatus(0x906b);
+			public static readonly QStatus BUS_HANDLES_NOT_ENABLED = new QStatus(0x906c);
+			public static readonly QStatus BUS_HANDLES_MISMATCH = new QStatus(0x906d);
+			public static readonly QStatus BT_MAX_CONNECTIONS_USED = new QStatus(0x906e);
+			public static readonly QStatus BUS_NO_SESSION = new QStatus(0x906f);
+			public static readonly QStatus BUS_ELEMENT_NOT_FOUND = new QStatus(0x9070);
+			public static readonly QStatus BUS_NOT_A_DICTIONARY = new QStatus(0x9071);
+			public static readonly QStatus BUS_WAIT_FAILED = new QStatus(0x9072);
+			public static readonly QStatus BUS_BAD_SESSION_OPTS = new QStatus(0x9074);
+			public static readonly QStatus BUS_CONNECTION_REJECTED = new QStatus(0x9075);
+			public static readonly QStatus DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER = new QStatus(0x9076);
+			public static readonly QStatus DBUS_REQUEST_NAME_REPLY_IN_QUEUE = new QStatus(0x9077);
+			public static readonly QStatus DBUS_REQUEST_NAME_REPLY_EXISTS = new QStatus(0x9078);
+			public static readonly QStatus DBUS_REQUEST_NAME_REPLY_ALREADY_OWNER = new QStatus(0x9079);
+			public static readonly QStatus DBUS_RELEASE_NAME_REPLY_RELEASED = new QStatus(0x907a);
+			public static readonly QStatus DBUS_RELEASE_NAME_REPLY_NON_EXISTENT = new QStatus(0x907b);
+			public static readonly QStatus DBUS_RELEASE_NAME_REPLY_NOT_OWNER = new QStatus(0x907c);
+			public static readonly QStatus DBUS_START_REPLY_ALREADY_RUNNING = new QStatus(0x907e);
+			public static readonly QStatus ALLJOYN_BINDSESSIONPORT_REPLY_ALREADY_EXISTS = new QStatus(0x9080);
+			public static readonly QStatus ALLJOYN_BINDSESSIONPORT_REPLY_FAILED = new QStatus(0x9081);
+			public static readonly QStatus ALLJOYN_JOINSESSION_REPLY_NO_SESSION = new QStatus(0x9083);
+			public static readonly QStatus ALLJOYN_JOINSESSION_REPLY_UNREACHABLE = new QStatus(0x9084);
+			public static readonly QStatus ALLJOYN_JOINSESSION_REPLY_CONNECT_FAILED = new QStatus(0x9085);
+			public static readonly QStatus ALLJOYN_JOINSESSION_REPLY_REJECTED = new QStatus(0x9086);
+			public static readonly QStatus ALLJOYN_JOINSESSION_REPLY_BAD_SESSION_OPTS = new QStatus(0x9087);
+			public static readonly QStatus ALLJOYN_JOINSESSION_REPLY_FAILED = new QStatus(0x9088);
+			public static readonly QStatus ALLJOYN_LEAVESESSION_REPLY_NO_SESSION = new QStatus(0x908a);
+			public static readonly QStatus ALLJOYN_LEAVESESSION_REPLY_FAILED = new QStatus(0x908b);
+			public static readonly QStatus ALLJOYN_ADVERTISENAME_REPLY_ALREADY_ADVERTISING = new QStatus(0x908d);
+			public static readonly QStatus ALLJOYN_ADVERTISENAME_REPLY_FAILED = new QStatus(0x908e);
+			public static readonly QStatus ALLJOYN_CANCELADVERTISENAME_REPLY_FAILED = new QStatus(0x9090);
+			public static readonly QStatus ALLJOYN_FINDADVERTISEDNAME_REPLY_ALREADY_DISCOVERING = new QStatus(0x9092);
+			public static readonly QStatus ALLJOYN_FINDADVERTISEDNAME_REPLY_FAILED = new QStatus(0x9093);
+			public static readonly QStatus ALLJOYN_CANCELFINDADVERTISEDNAME_REPLY_FAILED = new QStatus(0x9095);
+			public static readonly QStatus BUS_UNEXPECTED_DISPOSITION = new QStatus(0x9096);
+			public static readonly QStatus BUS_INTERFACE_ACTIVATED = new QStatus(0x9097);
+			public static readonly QStatus ALLJOYN_UNBINDSESSIONPORT_REPLY_BAD_PORT = new QStatus(0x9098);
+			public static readonly QStatus ALLJOYN_UNBINDSESSIONPORT_REPLY_FAILED = new QStatus(0x9099);
+			public static readonly QStatus ALLJOYN_BINDSESSIONPORT_REPLY_INVALID_OPTS = new QStatus(0x909a);
+			public static readonly QStatus ALLJOYN_JOINSESSION_REPLY_ALREADY_JOINED = new QStatus(0x909b);
+			public static readonly QStatus BUS_SELF_CONNECT = new QStatus(0x909c);
+			public static readonly QStatus BUS_SECURITY_NOT_ENABLED = new QStatus(0x909d);
+			public static readonly QStatus BUS_LISTENER_ALREADY_SET = new QStatus(0x909e);
+			public static readonly QStatus BUS_PEER_AUTH_VERSION_MISMATCH = new QStatus(0x909f);
+			public static readonly QStatus ALLJOYN_SETLINKTIMEOUT_REPLY_NOT_SUPPORTED = new QStatus(0x90a0);
+			public static readonly QStatus ALLJOYN_SETLINKTIMEOUT_REPLY_NO_DEST_SUPPORT = new QStatus(0x90a1);
+			public static readonly QStatus ALLJOYN_SETLINKTIMEOUT_REPLY_FAILED = new QStatus(0x90a2);
+			public static readonly QStatus ALLJOYN_ACCESS_PERMISSION_WARNING = new QStatus(0x90a3);
+			public static readonly QStatus ALLJOYN_ACCESS_PERMISSION_ERROR = new QStatus(0x90a4);
 		}
 		
 		#region DLL Imports

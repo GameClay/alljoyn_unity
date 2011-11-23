@@ -39,6 +39,8 @@
     <Compile Include="Message.cs" />
     <Compile Include="BusListener.cs" />
     <Compile Include="SessionOpts.cs" />
+    <Compile Include="ProxyBusObject.cs" />
+    <Compile Include="MsgArgs.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
