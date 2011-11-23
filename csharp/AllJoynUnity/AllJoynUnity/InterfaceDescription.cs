@@ -7,19 +7,19 @@ namespace AllJoynUnity
 	{
 		public class InterfaceDescription
 		{
+			[Flags]
 			public enum AnnotationFlags : byte
 			{
 				Default = 0,
 				NoReply = 1,
-				Deprecated = 2,
-				NoReply_Deprecated = 3
+				Deprecated = 2
 			}
 			
+			[Flags]
 			public enum AccessFlags : byte
 			{
 				Read = 1,
-				Write = 2,
-				ReadWrite = 3
+				Write = 2
 			}
 			
 			internal InterfaceDescription(IntPtr interfaceDescription)
@@ -27,12 +27,11 @@ namespace AllJoynUnity
 				_interfaceDescription = interfaceDescription;
 			}
 			
-			public bool AddMember(Message.Type type, string name, string inputSignature,
+			public Status AddMember(Message.Type type, string name, string inputSignature,
 				string outputSignature, string argNames, AnnotationFlags annotation = AnnotationFlags.Default)
 			{
-				int qstatus = alljoyn_interfacedescription_addmember(_interfaceDescription,
+				return (Status)alljoyn_interfacedescription_addmember(_interfaceDescription,
 					(int)type, name, inputSignature, outputSignature, argNames, (byte)annotation);
-				return (qstatus == 0);
 			}
 			
 			public void Activate()

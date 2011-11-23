@@ -12,25 +12,56 @@ namespace AllJoynUnity
 				_busAttachment = alljoyn_busattachment_create(applicationName, allowRemoteMessages ? 1 : 0);
 			}
 			
-			public InterfaceDescription CreateInterface(string interfaceName, bool secure)
+			public Status CreateInterface(string interfaceName, bool secure, out InterfaceDescription iface)
 			{
 				IntPtr interfaceDescription;
 				int qstatus = alljoyn_busattachment_createinterface(_busAttachment,
 					interfaceName, ref interfaceDescription, secure ? 1 : 0);
-				
-				return (qstatus == 0 ? new InterfaceDescription(interfaceDescription) : null);
+				if(qstatus == 0)
+				{
+					iface = new InterfaceDescription(interfaceDescription);
+				}
+				else
+				{
+					iface = null;
+				}
+				return (Status)qstatus;
 			}
 			
-			public bool Start()
+			public Status Start()
 			{
-				int qstatus = alljoyn_busattachment_start(_busAttachment);
-				return (qstatus == 0);
+				return (Status)alljoyn_busattachment_start(_busAttachment);
 			}
 			
-			public bool Connect(string connectSpec)
+			public Status Stop(bool blockUntilStopped)
 			{
-				int qstatus = alljoyn_busattachment_connect(_busAttachment, connectSpec);
-				return (qstatus == 0);
+				return (Status)alljoyn_busattachment_stop(_busAttachment, blockUntilStopped ? 1 : 0);
+			}
+			
+			public Status Connect(string connectSpec)
+			{
+				return (Status)alljoyn_busattachment_connect(_busAttachment, connectSpec);
+			}
+			
+			public void RegisterBusListener(BusListener listener)
+			{
+				alljoyn_busattachment_registerbuslistener(_busAttachment, listener.UnmanagedPtr);
+			}
+			
+			public Status FindAdvertisedName(string namePrefix)
+			{
+				return (Status)alljoyn_busattachment_findadvertisedname(_busAttachment, namePrefix);
+			}
+			
+			public Status JoinSession(string sessionHost, ushort sessionPort, BusListener listener,
+				out uint sessionId, SessionOpts opts)
+			{
+				IntPtr optsPtr = opts.UnmanagedPtr;
+				uint sessionId_out = 0;
+				int qstatus = alljoyn_busattachment_joinsession(_busAttachment, sessionHost, sessionPort,
+					listener.UnmanagedPtr, ref sessionId_out, optsPtr);
+				sessionId = sessionId_out;
+				return (Status)qstatus;
 			}
 			
 			#region IDisposable
@@ -51,6 +82,7 @@ namespace AllJoynUnity
 					}
 					
 					alljoyn_busattachment_destroy(_busAttachment);
+					_busAttachment = IntPtr.Zero;
 				}
 				_isDisposed = true;
 			}
@@ -81,7 +113,26 @@ namespace AllJoynUnity
 			private extern static int alljoyn_busattachment_start(IntPtr bus);
 			
 			[DllImport(DLL_IMPORT_TARGET)]
-			private extern static int alljoyn_busattachment_connect(IntPtr bus, [MarshalAs(UnmanagedType.LPStr)] string connectSpec);
+			private extern static int alljoyn_busattachment_stop(IntPtr bus, int blockUntilStopped);
+			
+			[DllImport(DLL_IMPORT_TARGET)]
+			private extern static int alljoyn_busattachment_connect(IntPtr bus,
+				[MarshalAs(UnmanagedType.LPStr)] string connectSpec);
+			
+			[DllImport(DLL_IMPORT_TARGET)]
+			private extern static void alljoyn_busattachment_registerbuslistener(IntPtr bus, IntPtr listener);
+			
+			[DllImport(DLL_IMPORT_TARGET)]
+			private extern static int alljoyn_busattachment_findadvertisedname(IntPtr bus,
+				[MarshalAs(UnmanagedType.LPStr)] string namePrefix);
+			
+			[DllImport(DLL_IMPORT_TARGET)]
+			private extern static int alljoyn_busattachment_joinsession(IntPtr bus,
+				[MarshalAs(UnmanagedType.LPStr)] string sessionHost,
+				ushort sessionPort,
+				IntPtr listener,
+				ref uint sessionId,
+				IntPtr opts);
 			#endregion
 			
 			#region Data
