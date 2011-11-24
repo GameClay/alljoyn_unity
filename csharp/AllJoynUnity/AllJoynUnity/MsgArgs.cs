@@ -10,20 +10,38 @@ namespace AllJoynUnity
 			public MsgArgs(uint numArgs)
 			{
 				_msgArgs = alljoyn_msgargs_create((UIntPtr)numArgs);
+				_argArray = new MsgArg[numArgs];
+				for(uint i = 0; i < numArgs; i++)
+				{
+					_argArray[i] = new MsgArg(this, i);
+				}
 			}
 			
-			internal MsgArgs(IntPtr msgArgs)
+			public int Length
 			{
-				_msgArgs = msgArgs;
-				_isDisposed = true;
+				get
+				{
+					return _argArray.Length;
+				}
 			}
 			
-			QStatus Set(uint argOffset, ref uint numArgs, string signature, __arglist)
+			public MsgArg this[int i]
 			{
-				UIntPtr nArgs = (UIntPtr)numArgs;
-				QStatus ret = alljoyn_msgargs_set(_msgArgs, (UIntPtr)argOffset, ref nArgs, signature, __arglist(1));
-				numArgs = (uint)nArgs;
-				return ret;
+				get
+				{
+					return _argArray[i];
+				}
+				set
+				{
+					MsgArg arg = value as MsgArg;
+					if(arg != null)
+					{
+						if(arg._setValue != null)
+						{
+							_argArray[i].Set(arg._setValue);
+						}
+					}
+				}
 			}
 			
 			#region IDisposable
@@ -55,10 +73,6 @@ namespace AllJoynUnity
 			
 			[DllImport(DLL_IMPORT_TARGET)]
 			private static extern void alljoyn_msgargs_destroy(IntPtr arg);
-			
-			[DllImport(DLL_IMPORT_TARGET)]
-			private static extern int alljoyn_msgargs_set(IntPtr args, UIntPtr argOffset, ref UIntPtr numArgs, 
-				[MarshalAs(UnmanagedType.LPStr)] string signature, __arglist);
 			#endregion
 			
 			#region Internal Properties
@@ -73,6 +87,7 @@ namespace AllJoynUnity
 			
 			#region Data
 			IntPtr _msgArgs;
+			MsgArg[] _argArray;
 			bool _isDisposed = false;
 			#endregion
 		}

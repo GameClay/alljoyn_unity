@@ -139,6 +139,21 @@ namespace basic_client
 					remoteObj.AddInterface(alljoynTestIntf);
 					
 					AllJoyn.Message reply = new AllJoyn.Message(sMsgBus);
+					AllJoyn.MsgArgs inputs = new AllJoyn.MsgArgs(2);
+					inputs[0] = "Hello ";
+					inputs[1] = "World!";
+					
+					status = remoteObj.MethodCallSynch(SERVICE_NAME, "cat", inputs, reply, 5000, 0);
+					
+					if(status)
+					{
+						Console.WriteLine("{0}.{1} (path={2}) returned \"{3}\"", SERVICE_NAME, "cat", SERVICE_PATH,
+							(string)reply[0]);
+					}
+					else
+					{
+						Console.WriteLine("MethodCall on {0}.{1} failed", SERVICE_NAME, "cat");
+					}
 				}
 			}
 			

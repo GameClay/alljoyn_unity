@@ -21,10 +21,18 @@ namespace AllJoynUnity
 				_message = alljoyn_message_create(bus.UnmanagedPtr);
 			}
 			
-			public MsgArgs GetArgs(uint index)
+			public MsgArg GetArg(int index)
 			{
-				IntPtr msgArgs = alljoyn_message_getarg(_message, index);
-				return (msgArgs != IntPtr.Zero ? new MsgArgs(msgArgs) : null);
+				IntPtr msgArgs = alljoyn_message_getarg(_message, (UIntPtr)index);
+				return (msgArgs != IntPtr.Zero ? new MsgArg(msgArgs) : null);
+			}
+			
+			public MsgArg this[int i]
+			{
+				get
+				{
+					return GetArg(i);
+				}
 			}
 			
 			#region IDisposable
@@ -58,7 +66,7 @@ namespace AllJoynUnity
 			private static extern void alljoyn_message_destroy(IntPtr msg);
 			
 			[DllImport(DLL_IMPORT_TARGET)]
-			private static extern IntPtr alljoyn_message_getarg(IntPtr msg, uint argN);
+			private static extern IntPtr alljoyn_message_getarg(IntPtr msg, UIntPtr argN);
 			#endregion
 			
 			#region Internal Properties

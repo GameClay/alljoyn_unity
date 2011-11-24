@@ -17,6 +17,13 @@ namespace AllJoynUnity
 				return alljoyn_proxybusobject_addinterface(_proxyBusObject, iface.UnmanagedPtr);
 			}
 			
+			public QStatus MethodCallSynch(string ifaceName, string methodName, MsgArgs args, Message replyMsg,
+				uint timeout, byte flags)
+			{
+				return alljoyn_proxybusobject_methodcall_synch(_proxyBusObject, ifaceName, methodName, args.UnmanagedPtr,
+					(UIntPtr)args.Length, replyMsg.UnmanagedPtr, timeout, flags);
+			}
+			
 			#region DLL Imports
 			[DllImport(DLL_IMPORT_TARGET)]
 			private static extern IntPtr alljoyn_proxybusobject_create(IntPtr bus,
@@ -29,6 +36,16 @@ namespace AllJoynUnity
 			
 			[DllImport(DLL_IMPORT_TARGET)]
 			private static extern int alljoyn_proxybusobject_addinterface(IntPtr bus, IntPtr iface);
+			
+			[DllImport(DLL_IMPORT_TARGET)]
+			private static extern int alljoyn_proxybusobject_methodcall_synch(IntPtr obj,
+				[MarshalAs(UnmanagedType.LPStr)] string ifaceName,
+				[MarshalAs(UnmanagedType.LPStr)] string methodName,
+				IntPtr args,
+				UIntPtr numArgs,
+				IntPtr replyMsg,
+				uint timeout,
+				byte flags);
 			#endregion
 			
 			#region IDisposable
