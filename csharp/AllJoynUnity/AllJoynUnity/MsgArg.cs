@@ -86,6 +86,12 @@ namespace AllJoynUnity
 				string signature = "";
 				_setValue = value;
 				
+				if(_bytePtr != IntPtr.Zero)
+				{
+					Marshal.FreeCoTaskMem(_bytePtr);
+					_bytePtr = IntPtr.Zero;
+				}
+				
 				/*
 				ALLJOYN_ARRAY            = 'a',    ///< AllJoyn array container type
 				ALLJOYN_DICT_ENTRY       = 'e',    ///< AllJoyn dictionary or map container type - an array of key-value pairs

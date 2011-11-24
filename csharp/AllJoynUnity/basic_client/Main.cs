@@ -167,7 +167,7 @@ namespace basic_client
 			sMsgBus.Dispose();
 			sBusListener.Dispose();
 			
-			Console.WriteLine("basic client exiting with status {0} ({1})\n", status, status.ToString ());
+			Console.WriteLine("basic client exiting with status {0} ({1})\n", status, status.ToString());
 		}
 	}
 }
