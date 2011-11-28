@@ -6,7 +6,7 @@ namespace AllJoynUnity
 {
 	public partial class AllJoyn
 	{
-		public class BusObject : IDisposable
+		public abstract class BusObject : IDisposable
 		{
 			public BusObject(string path, bool isPlaceholder)
 			{
@@ -34,70 +34,63 @@ namespace AllJoynUnity
 				gch.Free();
 			}
 
-			#region Events
-			public event PropertyGetEventHandler PropertyGet;
-			public event PropertySetEventHandler PropertySet;
-			public event ObjectRegisteredEventHandler ObjectRegistered;
-			public event ObjectUnregisteredEventHandler ObjectUnregistered;
-			#endregion
-
-			#region EventArgs types
-			public class PropertyEventArgs : EventArgs
+			#region Properties
+			public string Path
 			{
-				public PropertyEventArgs(string ifcName, string propName, MsgArg val)
+				get
 				{
-					this.ifcName = ifcName;
-					this.propName = propName;
-					this.val = val;
+					return Marshal.PtrToStringAuto(alljoyn_busobject_getpath(_busObject));
 				}
+			}
 
-				public string ifcName;
-				public string propName;
-				public MsgArg val;
+			public string Name
+			{
+				get
+				{
+					return ""; // TODO
+				}
 			}
 			#endregion
 
 			#region Delegates
-			public delegate void PropertyGetEventHandler(object sender, PropertyEventArgs ea);
-			public delegate void PropertySetEventHandler(object sender, PropertyEventArgs ea);
-			public delegate void ObjectRegisteredEventHandler(object sender);
-			public delegate void ObjectUnregisteredEventHandler(object sender);
-
 			private delegate void InternalPropertyGetEventHandler(IntPtr context, IntPtr ifcName, IntPtr propName, IntPtr val);
 			private delegate void InternalPropertySetEventHandler(IntPtr context, IntPtr ifcName, IntPtr propName, IntPtr val);
 			private delegate void InternalObjectRegisteredEventHandler(IntPtr context);
 			private delegate void InternalObjectUnregisteredEventHandler(IntPtr context);
 			#endregion
 
+			#region Abstract Methods
+			protected abstract void OnPropertyGet(string ifcName, string propName, MsgArg val);
+			protected abstract void OnPropertySet(string ifcName, string propName, MsgArg val);
+			protected abstract void OnObjectRegistered();
+			protected abstract void OnObjectUnregistered();
+			#endregion
+
 			#region Callbacks
 			private static void _PropertyGet(IntPtr context, IntPtr ifcName, IntPtr propName, IntPtr val)
 			{
 				BusObject bus = _sObjects[context];
-				if(bus.PropertyGet != null)
-					bus.PropertyGet(bus, new PropertyEventArgs(Marshal.PtrToStringAuto(ifcName),
-						Marshal.PtrToStringAuto(propName), new MsgArg(val)));
+				bus.OnPropertyGet(Marshal.PtrToStringAuto(ifcName),
+					Marshal.PtrToStringAuto(propName), new MsgArg(val));
 			}
 
 			private static void _PropertySet(IntPtr context, IntPtr ifcName, IntPtr propName, IntPtr val)
 			{
 				BusObject bus = _sObjects[context];
-				if(bus.PropertySet != null)
-					bus.PropertySet(bus, new PropertyEventArgs(Marshal.PtrToStringAuto(ifcName),
-						Marshal.PtrToStringAuto(propName), new MsgArg(val)));
+				bus.OnPropertySet(Marshal.PtrToStringAuto(ifcName),
+					Marshal.PtrToStringAuto(propName), new MsgArg(val));
 			}
 
 			private static void _ObjectRegistered(IntPtr context)
 			{
 				BusObject bus = _sObjects[context];
-				if(bus.ObjectRegistered != null)
-					bus.ObjectRegistered(bus);
+				bus.OnObjectRegistered();
 			}
 
 			private static void _ObjectUnregistered(IntPtr context)
 			{
 				BusObject bus = _sObjects[context];
-				if(bus.ObjectUnregistered != null)
-					bus.ObjectUnregistered(bus);
+				bus.OnObjectUnregistered();
 			}
 			#endregion
 
@@ -110,7 +103,10 @@ namespace AllJoynUnity
 				IntPtr context_in);
 
 			[DllImport(DLL_IMPORT_TARGET)]
-			private extern static IntPtr alljoyn_busobject_destroy(IntPtr busObject);
+			private extern static IntPtr alljoyn_busobject_destroy(IntPtr bus);
+
+			[DllImport(DLL_IMPORT_TARGET)]
+			private extern static IntPtr alljoyn_busobject_getpath(IntPtr bus);
 			#endregion
 
 			#region IDisposable
