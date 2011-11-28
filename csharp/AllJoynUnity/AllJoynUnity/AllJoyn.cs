@@ -7,17 +7,17 @@ namespace AllJoynUnity
 	{
 		// DLL name for externs
 		private const string DLL_IMPORT_TARGET = "alljoyn_unity";
-		
+
 		public static string GetVersion()
 		{
 			return Marshal.PtrToStringAuto(alljoyn_getversion());
 		}
-		
+
 		public static string GetBuildInfo()
 		{
 			return Marshal.PtrToStringAuto(alljoyn_getbuildinfo());
 		}
-		
+
 		[Flags]
 		public enum TransportMask : ushort
 		{
@@ -29,39 +29,39 @@ namespace AllJoynUnity
 			WWAN = 0x0008,
 			LAN = 0x0010
 		}
-		
+
 		public class QStatus
 		{
 			private QStatus(int x)
 			{
 				value = x;
 			}
-			
+
 			public static implicit operator QStatus(int x)
 			{
 				return new QStatus(x);
 			}
-			
+
 			public static implicit operator int(QStatus x)
 			{
 				return x.value;
 			}
-			
+
 			public static bool operator true(QStatus x)
 			{
 				return (x == OK);
 			}
-			
+
 			public static bool operator false(QStatus x)
 			{
 				return (x != OK);
 			}
-			
+
 			public static bool operator ==(QStatus x, QStatus y)
 			{
 				return x.value == y.value;
 			}
-			
+
 			public override bool Equals(object o) 
 			{
 				try
@@ -73,34 +73,34 @@ namespace AllJoynUnity
 					return false;
 				}
 			}
-			
+
 			public override int GetHashCode()
 			{
 				return value;
 			}
-			
+
 			public override string ToString()
 			{
 				return Marshal.PtrToStringAuto(QCC_StatusText(value));
 			}
-			
+
 			public static implicit operator string(QStatus x)
 			{
 				return x.value.ToString();
 			}
-			
+
 			public static bool operator !=(QStatus x, QStatus y)
 			{
 				return x.value != y.value;
 			}
-			
+
 			public static bool operator !(QStatus x)
 			{
 				return (x != OK);
 			}
-			
+
 			int value;
-			
+
 			public static readonly QStatus OK = new QStatus(0x0);
 			public static readonly QStatus FAIL = new QStatus(0x1);
 			public static readonly QStatus UTF_CONVERSION_FAILED = new QStatus(0x2);
@@ -315,14 +315,14 @@ namespace AllJoynUnity
 			public static readonly QStatus ALLJOYN_ACCESS_PERMISSION_WARNING = new QStatus(0x90a3);
 			public static readonly QStatus ALLJOYN_ACCESS_PERMISSION_ERROR = new QStatus(0x90a4);
 		}
-		
+
 		#region DLL Imports
 		[DllImport(DLL_IMPORT_TARGET)]
 		private extern static IntPtr alljoyn_getversion();
-		
+
 		[DllImport(DLL_IMPORT_TARGET)]
 		private extern static IntPtr alljoyn_getbuildinfo();
-		
+
 		[DllImport(DLL_IMPORT_TARGET)]
 		private extern static IntPtr QCC_StatusText(int status);
 		#endregion
