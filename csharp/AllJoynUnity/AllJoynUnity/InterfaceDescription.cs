@@ -115,8 +115,13 @@ namespace AllJoynUnity
 					_member = member;
 				}
 
+				internal Member(IntPtr memberPtr)
+				{
+					_member = (_Member)Marshal.PtrToStructure(memberPtr, typeof(_Member));
+				}
+
 				#region Data
-				_Member _member;
+				internal _Member _member;
 				#endregion
 			}
 

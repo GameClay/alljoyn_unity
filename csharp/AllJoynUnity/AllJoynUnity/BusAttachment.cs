@@ -87,6 +87,37 @@ namespace AllJoynUnity
 				return ret;
 			}
 
+			public QStatus RegisterBusObject(BusObject obj)
+			{
+				return alljoyn_busattachment_registerbusobject(_busAttachment, obj.UnmanagedPtr);
+			}
+
+			public void UnregisterBusObject(BusObject obj)
+			{
+				alljoyn_busattachment_unregisterbusobject(_busAttachment, obj.UnmanagedPtr);
+			}
+
+			public QStatus RequestName(string requestedName, DBus.NameFlags flags)
+			{
+				return alljoyn_busattachment_requestname(_busAttachment, requestedName, (uint)flags);
+			}
+
+			public QStatus ReleaseName(string requestedName)
+			{
+				return alljoyn_busattachment_releasename(_busAttachment, requestedName);
+			}
+
+			public QStatus BindSessionPort(ref ushort sessionPort, SessionOpts opts, SessionPortListener listener)
+			{
+				return alljoyn_busattachment_bindsessionport(_busAttachment, ref sessionPort,
+					opts.UnmanagedPtr, listener.UnmanagedPtr);
+			}
+
+			public QStatus UnbindSessionPort(ushort sessionPort)
+			{
+				return alljoyn_busattachment_unbindsessionport(_busAttachment, sessionPort);
+			}
+
 			#region IDisposable
 			public void Dispose()
 			{
@@ -165,6 +196,29 @@ namespace AllJoynUnity
 			[DllImport(DLL_IMPORT_TARGET)]
 			private extern static int alljoyn_busattachment_advertisename(IntPtr bus,
 				[MarshalAs(UnmanagedType.LPStr)] string name, ushort transports);
+			
+			[DllImport(DLL_IMPORT_TARGET)]
+			private extern static int alljoyn_busattachment_registerbusobject(IntPtr bus, IntPtr obj);
+
+			[DllImport(DLL_IMPORT_TARGET)]
+			private extern static void alljoyn_busattachment_unregisterbusobject(IntPtr bus, IntPtr obj);
+
+			[DllImport(DLL_IMPORT_TARGET)]
+			private extern static int alljoyn_busattachment_requestname(IntPtr bus,
+				[MarshalAs(UnmanagedType.LPStr)] string requestedName, uint flags);
+			
+			[DllImport(DLL_IMPORT_TARGET)]
+			private extern static int alljoyn_busattachment_releasename(IntPtr bus,
+				[MarshalAs(UnmanagedType.LPStr)] string name);
+			
+			[DllImport(DLL_IMPORT_TARGET)]
+			private extern static int alljoyn_busattachment_bindsessionport(IntPtr bus,
+				ref ushort sessionPort,
+				IntPtr opts,
+				IntPtr listener);
+			
+			[DllImport(DLL_IMPORT_TARGET)]
+			private extern static int alljoyn_busattachment_unbindsessionport(IntPtr bus, ushort sessionPort);
 			#endregion
 
 			#region Internal Properties

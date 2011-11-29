@@ -14,10 +14,38 @@ namespace basic_server
 		private const string connectArgs = "unix:abstract=alljoyn";
 		//private const string connectArgs = "launchd:";
 
-		private static bool sJoinComplete = false;
 		private static AllJoyn.BusAttachment sMsgBus;
 		private static AllJoyn.BusListener sBusListener;
-		private static uint sSessionId;
+
+		class TestBusObject : AllJoyn.BusObject
+		{
+			public TestBusObject(AllJoyn.BusAttachment bus, string path) : base(bus, path, false)
+			{
+				AllJoyn.InterfaceDescription exampleIntf = bus.GetInterface(INTERFACE_NAME);
+				AllJoyn.QStatus status = AddInterface(exampleIntf);
+				if(!status)
+				{
+					Console.WriteLine("Failed to add interface {0}", status);
+				}
+
+				AllJoyn.InterfaceDescription.Member catMember = exampleIntf.GetMember("cat");
+				status = AddMethodHandler(catMember, this.Cat);
+				if(!status)
+				{
+					Console.WriteLine("Failed to add method handler {0}", status);
+				}
+			}
+
+			protected override void OnObjectRegistered()
+			{
+				Console.WriteLine("ObjectRegistered has been called");
+			}
+
+			protected void Cat(AllJoyn.InterfaceDescription.Member member, AllJoyn.Message message)
+			{
+				
+			}
+		}
 
 		private static void NameOwnerChanged(object sender, AllJoyn.BusListener.NameOwnerChangedEventArgs ea)
 		{
@@ -53,6 +81,65 @@ namespace basic_server
 			// Create a bus listener
 			sBusListener = new AllJoyn.BusListener();
 			sBusListener.NameOwnerChanged += new AllJoyn.BusListener.NameOwnerChangedEventHandler(NameOwnerChanged);
+			if(status)
+			{
+				sMsgBus.RegisterBusListener(sBusListener);
+				Console.WriteLine("BusListener Registered.");
+			}
+
+			// Set up bus object
+			TestBusObject testObj = new TestBusObject(sMsgBus, SERVICE_PATH);
+
+			// Start the msg bus
+			if(status)
+			{
+				status = sMsgBus.Start();
+				if(status)
+				{
+					Console.WriteLine("BusAttachment started.");
+					sMsgBus.RegisterBusObject(testObj);
+
+					status = sMsgBus.Connect(connectArgs);
+					if(status)
+					{
+						Console.WriteLine("BusAttchement connected to " + connectArgs);
+					}
+					else
+					{
+						Console.WriteLine("BusAttachment::Connect(" + connectArgs + ") failed.");
+					}
+				}
+				else
+				{
+					Console.WriteLine("BusAttachment.Start failed.");
+				}
+			}
+
+			// Request name
+			if(status)
+			{
+				status = sMsgBus.RequestName(SERVICE_NAME,
+					AllJoyn.DBus.NameFlags.ReplaceExisting | AllJoyn.DBus.NameFlags.DoNotQueue);
+				if(!status)
+				{
+					Console.WriteLine("RequestName({0}) failed (status={1})\n", SERVICE_NAME, status);
+				}
+			}
+
+			// Create session
+			if(status)
+			{
+				AllJoyn.SessionOpts opts = new AllJoyn.SessionOpts(AllJoyn.SessionOpts.TrafficType.Messages, false,
+					AllJoyn.SessionOpts.ProximityType.Any, AllJoyn.TransportMask.Any);
+
+				status = 
+			}
+
+			// Dispose of objects now
+			sMsgBus.Dispose();
+			sBusListener.Dispose();
+
+			Console.WriteLine("basic server exiting with status {0} ({1})\n", status, status.ToString());
 		}
 	}
 }

@@ -21,6 +21,12 @@ namespace AllJoynUnity
 				_message = alljoyn_message_create(bus.UnmanagedPtr);
 			}
 
+			internal Message(IntPtr message)
+			{
+				_message = message;
+				_isDisposed = true;
+			}
+
 			public MsgArg GetArg(int index)
 			{
 				IntPtr msgArgs = alljoyn_message_getarg(_message, (UIntPtr)index);

@@ -43,6 +43,8 @@
     <Compile Include="MsgArgs.cs" />
     <Compile Include="MsgArg.cs" />
     <Compile Include="BusObject.cs" />
+    <Compile Include="DBus.cs" />
+    <Compile Include="SessionPortListener.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
