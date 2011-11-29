@@ -98,45 +98,45 @@ const char* alljoyn_msgargs_as_objpath(const alljoyn_msgargs args, size_t idx)
 void alljoyn_msgargs_as_signature(const alljoyn_msgargs args, size_t idx,
                                   uint8_t* out_len, const char** out_sig)
 {
-   *out_len = ((ajn::MsgArg*)args)[idx].v_signature.len;
-   *out_sig = ((ajn::MsgArg*)args)[idx].v_signature.sig;
+    *out_len = ((ajn::MsgArg*)args)[idx].v_signature.len;
+    *out_sig = ((ajn::MsgArg*)args)[idx].v_signature.sig;
 }
 
 void alljoyn_msgargs_as_handle(const alljoyn_msgargs args, size_t idx, void** out_socketFd)
 {
-   *out_socketFd = &((ajn::MsgArg*)args)[idx].v_handle.fd;
+    *out_socketFd = &((ajn::MsgArg*)args)[idx].v_handle.fd;
 }
 
 const alljoyn_msgargs alljoyn_msgargs_as_array(const alljoyn_msgargs args, size_t idx,
                                                size_t* out_len, const char** out_sig)
 {
-   *out_len = ((ajn::MsgArg*)args)[idx].v_array.GetNumElements();
-   *out_sig = ((ajn::MsgArg*)args)[idx].v_array.GetElemSig();
-   return (const alljoyn_msgargs)(((ajn::MsgArg*)args)[idx].v_array.GetElements());
+    *out_len = ((ajn::MsgArg*)args)[idx].v_array.GetNumElements();
+    *out_sig = ((ajn::MsgArg*)args)[idx].v_array.GetElemSig();
+    return (const alljoyn_msgargs)(((ajn::MsgArg*)args)[idx].v_array.GetElements());
 }
 
 alljoyn_msgargs alljoyn_msgargs_as_struct(const alljoyn_msgargs args, size_t idx,
                                           size_t* out_numMembers)
 {
-   *out_numMembers = ((ajn::MsgArg*)args)[idx].v_struct.numMembers;
-   return (alljoyn_msgargs)(((ajn::MsgArg*)args)[idx].v_struct.members);
+    *out_numMembers = ((ajn::MsgArg*)args)[idx].v_struct.numMembers;
+    return (alljoyn_msgargs)(((ajn::MsgArg*)args)[idx].v_struct.members);
 }
 
 void alljoyn_msgargs_as_dictentry(const alljoyn_msgargs args, size_t idx,
                                   alljoyn_msgargs* out_key, alljoyn_msgargs* out_val)
 {
-   *out_key = (alljoyn_msgargs)((ajn::MsgArg*)args)[idx].v_dictEntry.key;
-   *out_val = (alljoyn_msgargs)((ajn::MsgArg*)args)[idx].v_dictEntry.val;
+    *out_key = (alljoyn_msgargs)((ajn::MsgArg*)args)[idx].v_dictEntry.key;
+    *out_val = (alljoyn_msgargs)((ajn::MsgArg*)args)[idx].v_dictEntry.val;
 }
 
 alljoyn_msgargs alljoyn_msgargs_as_variant(const alljoyn_msgargs args, size_t idx)
 {
-   return (alljoyn_msgargs)((ajn::MsgArg*)args)[idx].v_dictEntry.val;
+    return (alljoyn_msgargs)((ajn::MsgArg*)args)[idx].v_dictEntry.val;
 }
 
 void alljoyn_msgargs_as_scalararray(const alljoyn_msgargs args, size_t idx,
                                     size_t* out_numElements, const void** out_elements)
 {
-   *out_numElements = ((ajn::MsgArg*)args)[idx].v_scalarArray.numElements;
-   *out_elements = ((ajn::MsgArg*)args)[idx].v_scalarArray.v_byte;
+    *out_numElements = ((ajn::MsgArg*)args)[idx].v_scalarArray.numElements;
+    *out_elements = ((ajn::MsgArg*)args)[idx].v_scalarArray.v_byte;
 }
