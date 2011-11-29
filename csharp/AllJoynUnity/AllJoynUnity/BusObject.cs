@@ -11,10 +11,10 @@ namespace AllJoynUnity
 			public BusObject(BusAttachment bus, string path, bool isPlaceholder)
 			{
 				// Can't let the GC free these delegates so they must be members
-				_propertyGet = new InternalPropertyGetEventHandler(_PropertyGet);
-				_propertySet = new InternalPropertySetEventHandler(_PropertySet);
-				_objectRegistered = new InternalObjectRegisteredEventHandler(_ObjectRegistered);
-				_objectUnregistered = new InternalObjectUnregisteredEventHandler(_ObjectUnregistered);
+				_propertyGet = new InternalPropertyGetEventHandler(this._PropertyGet);
+				_propertySet = new InternalPropertySetEventHandler(this._PropertySet);
+				_objectRegistered = new InternalObjectRegisteredEventHandler(this._ObjectRegistered);
+				_objectUnregistered = new InternalObjectUnregisteredEventHandler(this._ObjectUnregistered);
 
 				// Ref holder for method handler internal delegates
 				_methodHandlerDelegateRefHolder = new List<InternalMethodHandler>();
@@ -25,15 +25,8 @@ namespace AllJoynUnity
 				callbacks.object_registered = Marshal.GetFunctionPointerForDelegate(_objectRegistered);
 				callbacks.object_unregistered = Marshal.GetFunctionPointerForDelegate(_objectUnregistered);
 
-				// Insert this object into the static hashtable to re-map native->managed
-				if(_sObjects == null) _sObjects = new Dictionary<IntPtr, BusObject>();
-				if(_sRndSource == null) _sRndSource = new Random();
-
-				do { _hashId = (IntPtr)_sRndSource.Next(); } while(_sObjects.ContainsKey(_hashId));
-				_sObjects.Add(_hashId, this);
-
 				GCHandle gch = GCHandle.Alloc(callbacks, GCHandleType.Pinned);
-				_busObject = alljoyn_busobject_create(bus.UnmanagedPtr, path, isPlaceholder ? 1 : 0, gch.AddrOfPinnedObject(), _hashId);
+				_busObject = alljoyn_busobject_create(bus.UnmanagedPtr, path, isPlaceholder ? 1 : 0, gch.AddrOfPinnedObject(), IntPtr.Zero);
 				gch.Free();
 			}
 
@@ -112,30 +105,26 @@ namespace AllJoynUnity
 			#endregion
 
 			#region Callbacks
-			private static void _PropertyGet(IntPtr context, IntPtr ifcName, IntPtr propName, IntPtr val)
+			private void _PropertyGet(IntPtr context, IntPtr ifcName, IntPtr propName, IntPtr val)
 			{
-				BusObject bus = _sObjects[context];
-				bus.OnPropertyGet(Marshal.PtrToStringAuto(ifcName),
+				OnPropertyGet(Marshal.PtrToStringAuto(ifcName),
 					Marshal.PtrToStringAuto(propName), new MsgArg(val));
 			}
 
-			private static void _PropertySet(IntPtr context, IntPtr ifcName, IntPtr propName, IntPtr val)
+			private void _PropertySet(IntPtr context, IntPtr ifcName, IntPtr propName, IntPtr val)
 			{
-				BusObject bus = _sObjects[context];
-				bus.OnPropertySet(Marshal.PtrToStringAuto(ifcName),
+				OnPropertySet(Marshal.PtrToStringAuto(ifcName),
 					Marshal.PtrToStringAuto(propName), new MsgArg(val));
 			}
 
-			private static void _ObjectRegistered(IntPtr context)
+			private void _ObjectRegistered(IntPtr context)
 			{
-				BusObject bus = _sObjects[context];
-				bus.OnObjectRegistered();
+				OnObjectRegistered();
 			}
 
-			private static void _ObjectUnregistered(IntPtr context)
+			private void _ObjectUnregistered(IntPtr context)
 			{
-				BusObject bus = _sObjects[context];
-				bus.OnObjectUnregistered();
+				OnObjectUnregistered();
 			}
 			#endregion
 
@@ -175,7 +164,6 @@ namespace AllJoynUnity
 				{
 					alljoyn_busobject_destroy(_busObject);
 					_busObject = IntPtr.Zero;
-					_sObjects.Remove(_hashId);
 				}
 				_isDisposed = true;
 			}
@@ -217,7 +205,6 @@ namespace AllJoynUnity
 			#region Data
 			IntPtr _busObject;
 			bool _isDisposed = false;
-			IntPtr _hashId;
 
 			InternalPropertyGetEventHandler _propertyGet;
 			InternalPropertySetEventHandler _propertySet;
@@ -225,9 +212,6 @@ namespace AllJoynUnity
 			InternalObjectUnregisteredEventHandler _objectUnregistered;
 
 			List<InternalMethodHandler> _methodHandlerDelegateRefHolder;
-
-			static Dictionary<IntPtr, BusObject> _sObjects;
-			static Random _sRndSource;
 			#endregion
 		}
 	}

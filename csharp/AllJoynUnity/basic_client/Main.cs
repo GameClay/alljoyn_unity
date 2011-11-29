@@ -16,37 +16,40 @@ namespace basic_client
 
 		private static bool sJoinComplete = false;
 		private static AllJoyn.BusAttachment sMsgBus;
-		private static AllJoyn.BusListener sBusListener;
+		private static MyBusListener sBusListener;
 		private static uint sSessionId;
 
-		private static void FoundAdvertisedName(object sender, AllJoyn.BusListener.AdvertisedNameEventArgs ea)
+		class MyBusListener : AllJoyn.BusListener
 		{
-			Console.WriteLine("FoundAdvertisedName(name=" + ea.name + ", prefix=" + ea.namePrefix + ")");
-			if(string.Compare(SERVICE_NAME, ea.name) == 0)
+			protected override void FoundAdvertisedName(string name, AllJoyn.TransportMask transport, string namePrefix)
 			{
-				// We found a remote bus that is advertising basic service's  well-known name so connect to it
-				AllJoyn.SessionOpts opts = new AllJoyn.SessionOpts(AllJoyn.SessionOpts.TrafficType.Messages, false,
-					AllJoyn.SessionOpts.ProximityType.Any, AllJoyn.TransportMask.Any);
+				Console.WriteLine("FoundAdvertisedName(name=" + name + ", prefix=" + namePrefix + ")");
+				if(string.Compare(SERVICE_NAME, name) == 0)
+				{
+					// We found a remote bus that is advertising basic service's  well-known name so connect to it
+					AllJoyn.SessionOpts opts = new AllJoyn.SessionOpts(AllJoyn.SessionOpts.TrafficType.Messages, false,
+						AllJoyn.SessionOpts.ProximityType.Any, AllJoyn.TransportMask.Any);
 
-				AllJoyn.QStatus status = sMsgBus.JoinSession(ea.name, SERVICE_PORT, sBusListener, out sSessionId, opts);
-				if(status)
-				{
-					Console.WriteLine("JoinSession SUCCESS (Session id={0})", sSessionId);
+					AllJoyn.QStatus status = sMsgBus.JoinSession(name, SERVICE_PORT, this, out sSessionId, opts);
+					if(status)
+					{
+						Console.WriteLine("JoinSession SUCCESS (Session id={0})", sSessionId);
+					}
+					else
+					{
+						Console.WriteLine("JoinSession failed (status={0})", status.ToString ());
+					}
 				}
-				else
-				{
-					Console.WriteLine("JoinSession failed (status={0})", status.ToString ());
-				}
+				sJoinComplete = true;
 			}
-			sJoinComplete = true;
-		}
 
-		private static void NameOwnerChanged(object sender, AllJoyn.BusListener.NameOwnerChangedEventArgs ea)
-		{
-			if(string.Compare(SERVICE_NAME, ea.busName) == 0)
+			protected override void NameOwnerChanged(string busName, string previousOwner, string newOwner)
 			{
-				Console.WriteLine("NameOwnerChanged: name=" + ea.busName + ", oldOwner=" +
-					ea.previousOwner + ", newOwner=" + ea.newOwner);
+				if(string.Compare(SERVICE_NAME, busName) == 0)
+				{
+					Console.WriteLine("NameOwnerChanged: name=" + busName + ", oldOwner=" +
+						previousOwner + ", newOwner=" + newOwner);
+				}
 			}
 		}
 
@@ -101,9 +104,7 @@ namespace basic_client
 			}
 
 			// Create a bus listener
-			sBusListener = new AllJoyn.BusListener();
-			sBusListener.FoundAdvertisedName += new AllJoyn.BusListener.FoundAdvertisedNameEventHandler(FoundAdvertisedName);
-			sBusListener.NameOwnerChanged += new AllJoyn.BusListener.NameOwnerChangedEventHandler(NameOwnerChanged);
+			sBusListener = new MyBusListener();
 
 			if(status)
 			{

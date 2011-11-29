@@ -28,77 +28,28 @@ namespace AllJoynUnity
 				callbacks.busStopping = Marshal.GetFunctionPointerForDelegate(_busStopping);
 				callbacks.busDisconnected = Marshal.GetFunctionPointerForDelegate(_busDisconnected);
 
-				// Insert this object into the static hashtable to re-map native->managed
-				if(_sListeners == null) _sListeners = new Dictionary<IntPtr, BusListener>();
-				if(_sRndSource == null) _sRndSource = new Random();
-
-				do { _hashId = (IntPtr)_sRndSource.Next(); } while(_sListeners.ContainsKey(_hashId));
-				_sListeners.Add(_hashId, this);
-
 				GCHandle gch = GCHandle.Alloc(callbacks, GCHandleType.Pinned);
-				_busListener = alljoyn_buslistener_create(gch.AddrOfPinnedObject(), _hashId);
+				_busListener = alljoyn_buslistener_create(gch.AddrOfPinnedObject(), IntPtr.Zero);
 				gch.Free();
 			}
 
-			#region Events
-			public event ListenerRegisteredEventHandler ListenerRegistered;
-			public event ListenerUnregisteredEventHandler ListenerUnregistered;
-			public event FoundAdvertisedNameEventHandler FoundAdvertisedName;
-			public event LostAdvertisedNameEventHandler LostAdvertisedName;
-			public event NameOwnerChangedEventHandler NameOwnerChanged;
-			public event BusStoppingEventHandler BusStopping;
-			public event BusDisconnectedEventHandler BusDisconnected;
-			#endregion
+			#region Virtual Methods
+			protected virtual void ListenerRegistered(BusAttachment busAttachment){}
 
-			#region EventArgs types
-			public class ListenerRegisteredEventArgs : EventArgs
-			{
-				public ListenerRegisteredEventArgs(BusAttachment bus)
-				{
-					this.bus = bus;
-				}
-				
-				public BusAttachment bus;
-			}
+			protected virtual void ListenerUnregistered() {}
 
-			public class AdvertisedNameEventArgs : EventArgs
-			{
-				public AdvertisedNameEventArgs(string name, TransportMask transport, string namePrefix)
-				{
-					this.name = name;
-					this.transport = transport;
-					this.namePrefix = namePrefix;
-				}
+			protected virtual void FoundAdvertisedName(string name, TransportMask transport, string namePrefix) {}
 
-				public string name;
-				public TransportMask transport;
-				public string namePrefix;
-			}
+			protected virtual void LostAdvertisedName(string name, TransportMask transport, string namePrefix) {}
 
-			public class NameOwnerChangedEventArgs : EventArgs
-			{
-				public NameOwnerChangedEventArgs(string busName, string previousOwner, string newOwner)
-				{
-					this.busName = busName;
-					this.previousOwner = previousOwner;
-					this.newOwner = newOwner;
-				}
+			protected virtual void NameOwnerChanged(string busName, string previousOwner, string newOwner) {}
 
-				public string busName;
-				public string previousOwner;
-				public string newOwner;
-			}
+			protected virtual void BusStopping() {}
+
+			protected virtual void BusDisconnected() {}
 			#endregion
 
 			#region Delegates
-			public delegate void ListenerRegisteredEventHandler(object sender, ListenerRegisteredEventArgs ea);
-			public delegate void ListenerUnregisteredEventHandler(object sender);
-			public delegate void FoundAdvertisedNameEventHandler(object sender, AdvertisedNameEventArgs ea);
-			public delegate void LostAdvertisedNameEventHandler(object sender, AdvertisedNameEventArgs ea);
-			public delegate void NameOwnerChangedEventHandler(object sender, NameOwnerChangedEventArgs ea);
-			public delegate void BusStoppingEventHandler(object sender);
-			public delegate void BusDisconnectedEventHandler(object sender);
-
 			private delegate void InternalListenerRegisteredDelegate(IntPtr context, IntPtr bus);
 			private delegate void InternalListenerUnregisteredDelegate(IntPtr context);
 			private delegate void InternalFoundAdvertisedNameDelegate(IntPtr context, IntPtr name, ushort transport, IntPtr namePrefix);
@@ -109,59 +60,42 @@ namespace AllJoynUnity
 			#endregion
 
 			#region Callbacks
-			private static void _ListenerRegistered(IntPtr context, IntPtr bus)
+			private void _ListenerRegistered(IntPtr context, IntPtr bus)
 			{
-				BusListener listener = _sListeners[context];
-				if(listener.ListenerRegistered != null)
-					listener.ListenerRegistered(listener, new ListenerRegisteredEventArgs(null)); // TODO: Remap
+				ListenerRegistered(null); // TODO: Remap
 			}
 
-			private static void _ListenerUnregistered(IntPtr context)
+			private void _ListenerUnregistered(IntPtr context)
 			{
-				BusListener listener = _sListeners[context];
-				if(listener.ListenerUnregistered != null)
-					listener.ListenerUnregistered(listener);
+				ListenerUnregistered();
 			}
 
-			private static void _FoundAdvertisedName(IntPtr context, IntPtr name, ushort transport, IntPtr namePrefix)
+			private void _FoundAdvertisedName(IntPtr context, IntPtr name, ushort transport, IntPtr namePrefix)
 			{
-				BusListener listener = _sListeners[context];
-				if(listener.FoundAdvertisedName != null)
-					listener.FoundAdvertisedName(listener,
-						new AdvertisedNameEventArgs(Marshal.PtrToStringAuto(name), (TransportMask)transport,
-							Marshal.PtrToStringAuto(namePrefix)));
+				FoundAdvertisedName(Marshal.PtrToStringAuto(name), (TransportMask)transport,
+							Marshal.PtrToStringAuto(namePrefix));
 			}
 
-			private static void _LostAdvertisedName(IntPtr context, IntPtr name, ushort transport, IntPtr namePrefix)
+			private void _LostAdvertisedName(IntPtr context, IntPtr name, ushort transport, IntPtr namePrefix)
 			{
-				BusListener listener = _sListeners[context];
-				if(listener.LostAdvertisedName != null)
-					listener.LostAdvertisedName(listener,
-						new AdvertisedNameEventArgs(Marshal.PtrToStringAuto(name), (TransportMask)transport,
-							Marshal.PtrToStringAuto(namePrefix)));
+				LostAdvertisedName(Marshal.PtrToStringAuto(name), (TransportMask)transport,
+							Marshal.PtrToStringAuto(namePrefix));
 			}
 
-			private static void _NameOwnerChanged(IntPtr context, IntPtr busName, IntPtr previousOwner, IntPtr newOwner)
+			private void _NameOwnerChanged(IntPtr context, IntPtr busName, IntPtr previousOwner, IntPtr newOwner)
 			{
-				BusListener listener = _sListeners[context];
-				if(listener.NameOwnerChanged != null)
-					listener.NameOwnerChanged(listener,
-						new NameOwnerChangedEventArgs(Marshal.PtrToStringAuto(busName), Marshal.PtrToStringAuto(previousOwner),
-							Marshal.PtrToStringAuto(newOwner)));
+				NameOwnerChanged(Marshal.PtrToStringAuto(busName), Marshal.PtrToStringAuto(previousOwner),
+							Marshal.PtrToStringAuto(newOwner));
 			}
 
-			private static void _BusStopping(IntPtr context)
+			private void _BusStopping(IntPtr context)
 			{
-				BusListener listener = _sListeners[context];
-				if(listener.BusStopping != null)
-					listener.BusStopping(listener);
+				BusStopping();
 			}
 
-			private static void _BusDisconnected(IntPtr context)
+			private void _BusDisconnected(IntPtr context)
 			{
-				BusListener listener = _sListeners[context];
-				if(listener.BusDisconnected != null)
-					listener.BusDisconnected(listener);
+				BusDisconnected();
 			}
 			#endregion
 
@@ -188,7 +122,6 @@ namespace AllJoynUnity
 				{
 					alljoyn_buslistener_destroy(_busListener);
 					_busListener = IntPtr.Zero;
-					_sListeners.Remove(_hashId);
 				}
 				_isDisposed = true;
 			}
@@ -226,7 +159,6 @@ namespace AllJoynUnity
 			#region Data
 			IntPtr _busListener;
 			bool _isDisposed = false;
-			IntPtr _hashId;
 
 			InternalListenerRegisteredDelegate _listenerRegistered;
 			InternalListenerUnregisteredDelegate _listenerUnregistered;
@@ -235,9 +167,6 @@ namespace AllJoynUnity
 			InternalNameOwnerChangedDelegate _nameOwnerChanged;
 			InternalBusStoppingDelegate _busStopping;
 			InternalBusDisconnectedDelegate _busDisconnected;
-
-			static Dictionary<IntPtr, BusListener> _sListeners;
-			static Random _sRndSource;
 			#endregion
 		}
 	}

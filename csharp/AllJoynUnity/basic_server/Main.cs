@@ -15,7 +15,7 @@ namespace basic_server
 		//private const string connectArgs = "launchd:";
 
 		private static AllJoyn.BusAttachment sMsgBus;
-		private static AllJoyn.BusListener sBusListener;
+		private static MyBusListener sBusListener;
 
 		class TestBusObject : AllJoyn.BusObject
 		{
@@ -47,12 +47,15 @@ namespace basic_server
 			}
 		}
 
-		private static void NameOwnerChanged(object sender, AllJoyn.BusListener.NameOwnerChangedEventArgs ea)
+		class MyBusListener : AllJoyn.BusListener
 		{
-			if(string.Compare(SERVICE_NAME, ea.busName) == 0)
+			protected override void NameOwnerChanged(string busName, string previousOwner, string newOwner)
 			{
-				Console.WriteLine("NameOwnerChanged: name=" + ea.busName + ", oldOwner=" +
-					ea.previousOwner + ", newOwner=" + ea.newOwner);
+				if(string.Compare(SERVICE_NAME, busName) == 0)
+				{
+					Console.WriteLine("NameOwnerChanged: name=" + busName + ", oldOwner=" +
+						previousOwner + ", newOwner=" + newOwner);
+				}
 			}
 		}
 
@@ -79,8 +82,7 @@ namespace basic_server
 			}
 
 			// Create a bus listener
-			sBusListener = new AllJoyn.BusListener();
-			sBusListener.NameOwnerChanged += new AllJoyn.BusListener.NameOwnerChangedEventHandler(NameOwnerChanged);
+			sBusListener = new MyBusListener();
 			if(status)
 			{
 				sMsgBus.RegisterBusListener(sBusListener);
@@ -132,7 +134,7 @@ namespace basic_server
 				AllJoyn.SessionOpts opts = new AllJoyn.SessionOpts(AllJoyn.SessionOpts.TrafficType.Messages, false,
 					AllJoyn.SessionOpts.ProximityType.Any, AllJoyn.TransportMask.Any);
 
-				status = 
+				//status = 
 			}
 
 			// Dispose of objects now
