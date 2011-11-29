@@ -58,6 +58,23 @@ namespace AllJoynUnity
 				return ret;
 			}
 
+			protected QStatus MethodReply(Message message, MsgArgs args)
+			{
+				return alljoyn_busobject_methodreply_args(_busObject, message.UnmanagedPtr, args.UnmanagedPtr,
+					(UIntPtr)args.Length);
+			}
+
+			protected QStatus MethodReply(Message message, string error, string errorMessage)
+			{
+				return alljoyn_busobject_methodreply_err(_busObject, message.UnmanagedPtr, error,
+					errorMessage);
+			}
+
+			protected QStatus MethodReply(Message message, QStatus status)
+			{
+				return alljoyn_busobject_methodreply_status(_busObject, message.UnmanagedPtr, status.value);
+			}
+
 			#region Properties
 			public string Path
 			{
@@ -149,6 +166,18 @@ namespace AllJoynUnity
 			[DllImport(DLL_IMPORT_TARGET)]
 			private extern static int alljoyn_busobject_addmethodhandlers(IntPtr bus,
 				IntPtr entries, UIntPtr numEntries);
+
+			[DllImport(DLL_IMPORT_TARGET)]
+			private extern static int alljoyn_busobject_methodreply_args(IntPtr bus,
+				IntPtr msg, IntPtr msgArgs, UIntPtr numArgs);
+
+			[DllImport(DLL_IMPORT_TARGET)]
+			private extern static int alljoyn_busobject_methodreply_err(IntPtr bus, IntPtr msg,
+				[MarshalAs(UnmanagedType.LPStr)] string error,
+				[MarshalAs(UnmanagedType.LPStr)] string errorMsg);
+
+			[DllImport(DLL_IMPORT_TARGET)]
+			private extern static int alljoyn_busobject_methodreply_status(IntPtr bus, IntPtr msg, int status);
 			#endregion
 
 			#region IDisposable

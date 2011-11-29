@@ -9,10 +9,39 @@ namespace AllJoynUnity
 		{
 			public SessionPortListener()
 			{
+				_acceptSessionJoiner = new InternalAcceptSessionJoiner(this._AcceptSessionJoiner);
+				_sessionJoined = new InternalSessionJoined(this._SessionJoined);
+
+				SessionPortListenerCallbacks callbacks;
+				callbacks.acceptSessionJoiner = Marshal.GetFunctionPointerForDelegate(_acceptSessionJoiner);
+				callbacks.sessionJoined = Marshal.GetFunctionPointerForDelegate(_sessionJoined);
+
+				GCHandle gch = GCHandle.Alloc(callbacks, GCHandleType.Pinned);
+				_sessionPortListener = alljoyn_sessionportlistener_create(gch.AddrOfPinnedObject(), IntPtr.Zero);
+				gch.Free();
 			}
 
-			#region Callbacks
+			#region Virtual Methods
+			protected virtual bool AcceptSessionJoiner(ushort sessionPort, string joiner, SessionOpts opts)
+			{
+				return false;
+			}
 
+			protected virtual void SessionJoined(ushort sessionPort, uint sessionId, string joiner)
+			{
+			}
+			#endregion
+
+			#region Callbacks
+			private int _AcceptSessionJoiner(IntPtr context, ushort sessionPort, IntPtr joiner, IntPtr opts)
+			{
+				return (AcceptSessionJoiner(sessionPort, Marshal.PtrToStringAuto(joiner), new SessionOpts(opts)) ? 1 : 0);
+			}
+
+			private void _SessionJoined(IntPtr context, ushort sessionPort, uint sessionId, IntPtr joiner)
+			{
+				SessionJoined(sessionPort, sessionId, Marshal.PtrToStringAuto(joiner));
+			}
 			#endregion
 
 			#region Delegates
@@ -74,6 +103,9 @@ namespace AllJoynUnity
 			#region Data
 			IntPtr _sessionPortListener;
 			bool _isDisposed = false;
+
+			InternalAcceptSessionJoiner _acceptSessionJoiner;
+			InternalSessionJoined _sessionJoined;
 			#endregion
 		}
 	}

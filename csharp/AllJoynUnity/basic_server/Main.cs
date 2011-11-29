@@ -16,6 +16,7 @@ namespace basic_server
 
 		private static AllJoyn.BusAttachment sMsgBus;
 		private static MyBusListener sBusListener;
+		private static MySessionPortListener sSessionPortListener;
 
 		class TestBusObject : AllJoyn.BusObject
 		{
@@ -43,7 +44,15 @@ namespace basic_server
 
 			protected void Cat(AllJoyn.InterfaceDescription.Member member, AllJoyn.Message message)
 			{
-				
+				string outStr = (string)message[0] + (string)message[1];
+				AllJoyn.MsgArgs outArgs = new AllJoyn.MsgArgs(1);
+				outArgs[0] = outStr;
+
+				AllJoyn.QStatus status = MethodReply(message, outArgs);
+				if(!status)
+				{
+					Console.WriteLine("Ping: Error sending reply");
+				}
 			}
 		}
 
@@ -56,6 +65,21 @@ namespace basic_server
 					Console.WriteLine("NameOwnerChanged: name=" + busName + ", oldOwner=" +
 						previousOwner + ", newOwner=" + newOwner);
 				}
+			}
+		}
+
+		class MySessionPortListener : AllJoyn.SessionPortListener
+		{
+			protected override bool AcceptSessionJoiner(ushort sessionPort, string joiner, AllJoyn.SessionOpts opts)
+			{
+				if (sessionPort != SERVICE_PORT)
+				{
+					Console.WriteLine("Rejecting join attempt on unexpected session port {0}", sessionPort);
+					return false;
+				}
+				Console.WriteLine("Accepting join session request from {0} (opts.proximity={1}, opts.traffic={2}, opts.transports={3})",
+					joiner, opts.Proximity, opts.Traffic, opts.Transports);
+				return true;
 			}
 		}
 
@@ -124,24 +148,47 @@ namespace basic_server
 					AllJoyn.DBus.NameFlags.ReplaceExisting | AllJoyn.DBus.NameFlags.DoNotQueue);
 				if(!status)
 				{
-					Console.WriteLine("RequestName({0}) failed (status={1})\n", SERVICE_NAME, status);
+					Console.WriteLine("RequestName({0}) failed (status={1})", SERVICE_NAME, status);
 				}
 			}
 
 			// Create session
+			AllJoyn.SessionOpts opts = new AllJoyn.SessionOpts(AllJoyn.SessionOpts.TrafficType.Messages, false,
+					AllJoyn.SessionOpts.ProximityType.Any, AllJoyn.TransportMask.Any);
 			if(status)
 			{
-				AllJoyn.SessionOpts opts = new AllJoyn.SessionOpts(AllJoyn.SessionOpts.TrafficType.Messages, false,
-					AllJoyn.SessionOpts.ProximityType.Any, AllJoyn.TransportMask.Any);
+				ushort sessionPort = SERVICE_PORT;
+				sSessionPortListener = new MySessionPortListener();
+				status = sMsgBus.BindSessionPort(ref sessionPort, opts, sSessionPortListener);
+				if(!status)
+				{
+					Console.WriteLine("BindSessionPort failed ({0})", status);
+				}
+			}
 
-				//status = 
+			// Advertise name
+			if(status)
+			{
+				status = sMsgBus.AdvertiseName(SERVICE_NAME, opts.Transports);
+				if(!status)
+				{
+					Console.WriteLine("Failed to advertise name {0} ({1})", SERVICE_NAME, status);
+				}
+			}
+
+			if(status)
+			{
+				while(true)
+				{
+					System.Threading.Thread.Sleep(1);
+				}
 			}
 
 			// Dispose of objects now
 			sMsgBus.Dispose();
 			sBusListener.Dispose();
 
-			Console.WriteLine("basic server exiting with status {0} ({1})\n", status, status.ToString());
+			Console.WriteLine("basic server exiting with status {0} ({1})", status, status.ToString());
 		}
 	}
 }

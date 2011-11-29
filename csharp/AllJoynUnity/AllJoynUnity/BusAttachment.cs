@@ -79,6 +79,11 @@ namespace AllJoynUnity
 				return alljoyn_busattachment_advertisename(_busAttachment, name, (ushort)transports);
 			}
 
+			public QStatus CancelAdvertisedName(string name, TransportMask transports)
+			{
+				return alljoyn_busattachment_canceladvertisename(_busAttachment, name, (ushort)transports);
+			}
+
 			public InterfaceDescription GetInterface(string name)
 			{
 				IntPtr iface = alljoyn_busattachment_getinterface(_busAttachment, name);
@@ -196,7 +201,11 @@ namespace AllJoynUnity
 			[DllImport(DLL_IMPORT_TARGET)]
 			private extern static int alljoyn_busattachment_advertisename(IntPtr bus,
 				[MarshalAs(UnmanagedType.LPStr)] string name, ushort transports);
-			
+
+			[DllImport(DLL_IMPORT_TARGET)]
+			private extern static int alljoyn_busattachment_canceladvertisename(IntPtr bus,
+				[MarshalAs(UnmanagedType.LPStr)] string name, ushort transports);
+
 			[DllImport(DLL_IMPORT_TARGET)]
 			private extern static int alljoyn_busattachment_registerbusobject(IntPtr bus, IntPtr obj);
 

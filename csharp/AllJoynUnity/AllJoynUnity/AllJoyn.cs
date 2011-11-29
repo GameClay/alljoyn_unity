@@ -99,7 +99,7 @@ namespace AllJoynUnity
 				return (x != OK);
 			}
 
-			int value;
+			internal int value;
 
 			public static readonly QStatus OK = new QStatus(0x0);
 			public static readonly QStatus FAIL = new QStatus(0x1);
