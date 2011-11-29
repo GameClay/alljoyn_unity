@@ -42,10 +42,9 @@ void alljoyn_busattachment_destroy(alljoyn_busattachment bus)
     delete (ajn::BusAttachment*)bus;
 }
 
-QStatus alljoyn_busattachment_stop(alljoyn_busattachment bus, QC_BOOL blockUntilStopped)
+QStatus alljoyn_busattachment_stop(alljoyn_busattachment bus)
 {
-    bool blockBool = (blockUntilStopped == QC_TRUE ? true : false);
-    return ((ajn::BusAttachment*)bus)->Stop(blockBool);
+    return ((ajn::BusAttachment*)bus)->Stop();
 }
 
 QStatus alljoyn_busattachment_createinterface(alljoyn_busattachment bus,
@@ -113,11 +112,6 @@ QStatus alljoyn_busattachment_registerbusobject(alljoyn_busattachment bus, alljo
 void alljoyn_busattachment_unregisterbusobject(alljoyn_busattachment bus, alljoyn_busobject object)
 {
     ((ajn::BusAttachment*)bus)->UnregisterBusObject(*((ajn::BusObject*)object));
-}
-
-void alljoyn_busattachment_waitstop(alljoyn_busattachment bus)
-{
-    ((ajn::BusAttachment*)bus)->WaitStop();
 }
 
 QStatus alljoyn_busattachment_requestname(alljoyn_busattachment bus, const char* requestedName, uint32_t flags)

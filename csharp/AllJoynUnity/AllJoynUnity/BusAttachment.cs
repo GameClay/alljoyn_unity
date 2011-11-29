@@ -33,14 +33,9 @@ namespace AllJoynUnity
 				return alljoyn_busattachment_start(_busAttachment);
 			}
 
-			public QStatus Stop(bool blockUntilStopped)
+			public QStatus Stop()
 			{
-				return alljoyn_busattachment_stop(_busAttachment, blockUntilStopped ? 1 : 0);
-			}
-
-			public void WaitStop()
-			{
-				alljoyn_busattachment_waitstop(_busAttachment);
+				return alljoyn_busattachment_stop(_busAttachment);
 			}
 
 			public QStatus Connect(string connectSpec)
@@ -135,7 +130,7 @@ namespace AllJoynUnity
 			private extern static int alljoyn_busattachment_start(IntPtr bus);
 
 			[DllImport(DLL_IMPORT_TARGET)]
-			private extern static int alljoyn_busattachment_stop(IntPtr bus, int blockUntilStopped);
+			private extern static int alljoyn_busattachment_stop(IntPtr bus);
 
 			[DllImport(DLL_IMPORT_TARGET)]
 			private extern static int alljoyn_busattachment_connect(IntPtr bus,
@@ -159,9 +154,6 @@ namespace AllJoynUnity
 			[DllImport(DLL_IMPORT_TARGET)]
 			private extern static IntPtr alljoyn_busattachment_getinterface(IntPtr bus,
 				[MarshalAs(UnmanagedType.LPStr)] string name);
-
-			[DllImport(DLL_IMPORT_TARGET)]
-			private extern static void alljoyn_busattachment_waitstop(IntPtr bus);
 
 			[DllImport(DLL_IMPORT_TARGET)]
 			private extern static void alljoyn_busattachment_unregisterbuslistener(IntPtr bus, IntPtr listener);

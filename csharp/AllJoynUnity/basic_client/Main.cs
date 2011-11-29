@@ -157,12 +157,6 @@ namespace basic_client
 				}
 			}
 
-			// Stop the bus (not strictly necessary since we are going to delete it anyways)
-			if(!sMsgBus.Stop(true))
-			{
-				Console.WriteLine("BusAttachment.Stop failed");
-			}
-
 			// Dispose of objects now
 			sMsgBus.Dispose();
 			sBusListener.Dispose();

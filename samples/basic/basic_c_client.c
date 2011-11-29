@@ -52,16 +52,11 @@ static alljoyn_sessionid s_sessionId = 0;
 /* Static BusListener */
 static alljoyn_buslistener g_busListener;
 
-/** Signal handler */
+static volatile sig_atomic_t g_interrupt = QC_FALSE;
+
 static void SigIntHandler(int sig)
 {
-    if (NULL != g_msgBus) {
-        QStatus status = alljoyn_busattachment_stop(g_msgBus, QC_FALSE);
-        if (ER_OK != status) {
-            printf("BusAttachment::Stop() failed\n");
-        }
-    }
-    exit(0);
+    g_interrupt = QC_TRUE;
 }
 
 /* FoundAdvertisedName callback */
@@ -177,15 +172,15 @@ int main(int argc, char** argv, char** envArg)
     }
 
     /* Wait for join session to complete */
-    while (s_joinComplete == QC_FALSE) {
+    while (s_joinComplete == QC_FALSE && g_interrupt == QC_FALSE) {
 #ifdef _WIN32
         Sleep(10);
 #else
-        sleep(1);
+        usleep(100 * 1000);
 #endif
     }
 
-    if (status == ER_OK) {
+    if (status == ER_OK && g_interrupt == QC_FALSE) {
         alljoyn_proxybusobject remoteObj = alljoyn_proxybusobject_create(g_msgBus, SERVICE_NAME, SERVICE_PATH, s_sessionId);
         const alljoyn_interfacedescription alljoynTestIntf = alljoyn_busattachment_getinterface(g_msgBus, INTERFACE_NAME);
         assert(alljoynTestIntf);
@@ -209,15 +204,6 @@ int main(int argc, char** argv, char** envArg)
         alljoyn_proxybusobject_destroy(remoteObj);
         alljoyn_message_destroy(reply);
         alljoyn_msgargs_destroy(inputs);
-    }
-
-
-    /* Stop the bus (not strictly necessary since we are going to delete it anyways) */
-    if (g_msgBus) {
-        QStatus s = alljoyn_busattachment_stop(g_msgBus, QC_TRUE);
-        if (ER_OK != s) {
-            printf("BusAttachment::Stop failed\n");
-        }
     }
 
     /* Deallocate bus */

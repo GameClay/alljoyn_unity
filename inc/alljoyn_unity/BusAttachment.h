@@ -65,21 +65,12 @@ extern AJ_API void alljoyn_busattachment_destroy(alljoyn_busattachment bus);
  * Stop the message bus.
  *
  * @param bus                 BusAttachment to stop.
- * @param blockUntilStopped   Block the caller until the bus is stopped
  *
  * @return
  *      - #ER_OK if successful.
  *      - An error status if unable to stop the message bus
  */
-extern AJ_API QStatus alljoyn_busattachment_stop(alljoyn_busattachment bus, QC_BOOL blockUntilStopped);
-
-/**
- * Wait for the message bus to be stopped. This method blocks the calling thread until another thread
- * calls the Stop() method. Return immediately if the message bus has not been started.
- *
- * @param bus The bus to wait on stopping.
- */
-extern AJ_API void alljoyn_busattachment_waitstop(alljoyn_busattachment bus);
+extern AJ_API QStatus alljoyn_busattachment_stop(alljoyn_busattachment bus);
 
 /**
  * Create an interface description with a given name.
