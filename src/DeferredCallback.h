@@ -59,7 +59,7 @@ class DeferredCallback {
     bool IsMainThread()
     {
         bool ret = (pthread_equal(sMainThread, pthread_self()) != 0);
-        printf("Executing on %s thread\n", ret ? "main" : "alternate");
+        //printf("Executing on %s thread\n", ret ? "main" : "alternate");
         return ret;
     }
 
