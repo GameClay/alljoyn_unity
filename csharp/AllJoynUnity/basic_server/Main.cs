@@ -180,6 +180,7 @@ namespace basic_server
 			{
 				while(true)
 				{
+					AllJoyn.TriggerCallbacks(); // Pump messages
 					System.Threading.Thread.Sleep(1);
 				}
 			}

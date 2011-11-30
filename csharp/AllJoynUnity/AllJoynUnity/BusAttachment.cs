@@ -119,13 +119,33 @@ namespace AllJoynUnity
 
 			public QStatus BindSessionPort(ref ushort sessionPort, SessionOpts opts, SessionPortListener listener)
 			{
-				return alljoyn_busattachment_bindsessionport(_busAttachment, ref sessionPort,
-					opts.UnmanagedPtr, listener.UnmanagedPtr);
+				QStatus ret = QStatus.OK;
+				ushort otherSessionPort = sessionPort;
+				Thread bindThread = new Thread((object o) => { 
+					ret = alljoyn_busattachment_bindsessionport(_busAttachment, ref otherSessionPort,
+						opts.UnmanagedPtr, listener.UnmanagedPtr);
+				});
+				while(bindThread.IsAlive)
+				{
+					AllJoyn.TriggerCallbacks();
+					Thread.Sleep(0);
+				}
+				sessionPort = otherSessionPort;
+				return ret;
 			}
 
 			public QStatus UnbindSessionPort(ushort sessionPort)
 			{
-				return alljoyn_busattachment_unbindsessionport(_busAttachment, sessionPort);
+				QStatus ret = QStatus.OK;
+				Thread bindThread = new Thread((object o) => { 
+					ret = alljoyn_busattachment_unbindsessionport(_busAttachment, sessionPort);
+				});
+				while(bindThread.IsAlive)
+				{
+					AllJoyn.TriggerCallbacks();
+					Thread.Sleep(0);
+				}
+				return ret;
 			}
 
 			internal static BusAttachment MapBusAttachment(IntPtr key)

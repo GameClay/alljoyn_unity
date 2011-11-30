@@ -23,6 +23,7 @@
 #include <alljoyn/BusObject.h>
 #include <alljoyn_unity/BusObject.h>
 #include <map>
+#include "DeferredCallback.h"
 
 using namespace qcc;
 using namespace std;
@@ -92,7 +93,9 @@ class BusObjectC : public BusObject {
     {
         QStatus ret = ER_BUS_NO_SUCH_PROPERTY;
         if (callbacks.property_get != NULL) {
-            ret = callbacks.property_get(context, ifcName, propName, (alljoyn_msgargs)(&val));
+            DeferredCallback_4<QStatus, const void*, const char*, const char*, alljoyn_msgargs>* dcb =
+                new DeferredCallback_4<QStatus, const void*, const char*, const char*, alljoyn_msgargs>(callbacks.property_get, context, ifcName, propName, (alljoyn_msgargs)(&val));
+            ret = dcb->Execute();
         }
         return ret;
     }
@@ -101,7 +104,9 @@ class BusObjectC : public BusObject {
     {
         QStatus ret = ER_BUS_NO_SUCH_PROPERTY;
         if (callbacks.property_set != NULL) {
-            ret = callbacks.property_set(context, ifcName, propName, (alljoyn_msgargs)(&val));
+            DeferredCallback_4<QStatus, const void*, const char*, const char*, alljoyn_msgargs>* dcb =
+                new DeferredCallback_4<QStatus, const void*, const char*, const char*, alljoyn_msgargs>(callbacks.property_set, context, ifcName, propName, (alljoyn_msgargs)(&val));
+            ret = dcb->Execute();
         }
         return ret;
     }
@@ -111,7 +116,9 @@ class BusObjectC : public BusObject {
     virtual void ObjectRegistered(void)
     {
         if (callbacks.object_registered != NULL) {
-            callbacks.object_registered(context);
+            DeferredCallback_1<void, const void*>* dcb =
+                new DeferredCallback_1<void, const void*>(callbacks.object_registered, context);
+            dcb->Execute();
         }
     }
 
@@ -121,7 +128,9 @@ class BusObjectC : public BusObject {
         BusObject::ObjectUnregistered();
 
         if (callbacks.object_unregistered != NULL) {
-            callbacks.object_unregistered(context);
+            DeferredCallback_1<void, const void*>* dcb =
+                new DeferredCallback_1<void, const void*>(callbacks.object_unregistered, context);
+            dcb->Execute();
         }
     }
 

@@ -20,13 +20,11 @@ namespace AllJoynUnity
 			return Marshal.PtrToStringAuto(alljoyn_getbuildinfo());
 		}
 
-//#if UNITY
-		/// Call from main thread to trigger C# callbacks for Android.
+		/// Call to trigger callbacks on main thread.
 		public static int TriggerCallbacks()
 		{
 			return alljoyn_unity_deferred_callbacks_process();
 		}
-//#endif
 
 		[Flags]
 		public enum TransportMask : ushort

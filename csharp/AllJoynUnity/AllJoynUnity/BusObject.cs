@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
@@ -191,7 +192,12 @@ namespace AllJoynUnity
 			{
 				if(!_isDisposed)
 				{
-					alljoyn_busobject_destroy(_busObject);
+					Thread destroyThread = new Thread((object o) => { alljoyn_busobject_destroy(_busObject); });
+					while(destroyThread.IsAlive)
+					{
+						AllJoyn.TriggerCallbacks();
+						Thread.Sleep(0);
+					}
 					_busObject = IntPtr.Zero;
 				}
 				_isDisposed = true;
