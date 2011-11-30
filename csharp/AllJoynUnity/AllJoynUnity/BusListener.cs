@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using System.Threading;
 using System.Runtime.InteropServices;
 
 namespace AllJoynUnity
@@ -62,12 +62,14 @@ namespace AllJoynUnity
 			#region Callbacks
 			private void _ListenerRegistered(IntPtr context, IntPtr bus)
 			{
-				ListenerRegistered(null); // TODO: Remap
+				_registeredBus = BusAttachment.MapBusAttachment(bus);
+				ListenerRegistered(_registeredBus);
 			}
 
 			private void _ListenerUnregistered(IntPtr context)
 			{
 				ListenerUnregistered();
+				_registeredBus = null;
 			}
 
 			private void _FoundAdvertisedName(IntPtr context, IntPtr name, ushort transport, IntPtr namePrefix)
@@ -120,7 +122,19 @@ namespace AllJoynUnity
 			{
 				if(!_isDisposed)
 				{
-					alljoyn_buslistener_destroy(_busListener);
+					// Dispose of BusAttachment before listeners
+					if(_registeredBus != null)
+					{
+						_registeredBus.Dispose();
+					}
+					
+					Thread destroyThread = new Thread((object o) => { alljoyn_buslistener_destroy(_busListener); });
+					while(destroyThread.IsAlive)
+					{
+						AllJoyn.TriggerCallbacks();
+						Thread.Sleep(0);
+					}
+					
 					_busListener = IntPtr.Zero;
 				}
 				_isDisposed = true;
@@ -159,6 +173,7 @@ namespace AllJoynUnity
 			#region Data
 			IntPtr _busListener;
 			bool _isDisposed = false;
+			BusAttachment _registeredBus;
 
 			InternalListenerRegisteredDelegate _listenerRegistered;
 			InternalListenerUnregisteredDelegate _listenerUnregistered;

@@ -1,6 +1,3 @@
-#ifndef _ALLJOYN_UNITY_AJAPI_H
-#define _ALLJOYN_UNITY_AJAPI_H
-
 /******************************************************************************
  * Copyright 2009-2011, Qualcomm Innovation Center, Inc.
  *
@@ -17,22 +14,16 @@
  *    limitations under the License.
  ******************************************************************************/
 
-/** This #define allows for redefinition to __dllexport or __dllimport on relevant platforms */
-#ifndef AJ_API
-#   define AJ_API
-#endif
+#include "DeferredCallback.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+namespace ajn {
 
-/**
- * Unity-specific function to process alternate-thread callbacks on the main thread.
- */
-extern AJ_API int alljoyn_unity_deferred_callbacks_process();
+std::list<DeferredCallback*> DeferredCallback::sPendingCallbacks;
+pthread_t DeferredCallback::sMainThread = pthread_self();
 
-#ifdef __cplusplus
-} /* extern "C" */
-#endif
+}
 
-#endif
+int alljoyn_unity_deferred_callbacks_process()
+{
+    return ajn::DeferredCallback::TriggerCallbacks();
+}

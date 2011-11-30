@@ -8,15 +8,25 @@ namespace AllJoynUnity
 		// DLL name for externs
 		private const string DLL_IMPORT_TARGET = "alljoyn_unity";
 
+		/// Get the version string from AllJoyn.
 		public static string GetVersion()
 		{
 			return Marshal.PtrToStringAuto(alljoyn_getversion());
 		}
 
+		/// Get the build info string from AllJoyn.
 		public static string GetBuildInfo()
 		{
 			return Marshal.PtrToStringAuto(alljoyn_getbuildinfo());
 		}
+
+//#if UNITY
+		/// Call from main thread to trigger C# callbacks for Android.
+		public static int TriggerCallbacks()
+		{
+			return alljoyn_unity_deferred_callbacks_process();
+		}
+//#endif
 
 		[Flags]
 		public enum TransportMask : ushort
@@ -325,6 +335,9 @@ namespace AllJoynUnity
 
 		[DllImport(DLL_IMPORT_TARGET)]
 		private extern static IntPtr QCC_StatusText(int status);
+
+		[DllImport(DLL_IMPORT_TARGET)]
+		private extern static int alljoyn_unity_deferred_callbacks_process();
 		#endregion
 	}
 }

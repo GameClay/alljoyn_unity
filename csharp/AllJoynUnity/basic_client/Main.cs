@@ -125,6 +125,7 @@ namespace basic_client
 			// Wait for join session to complete
 			while(sJoinComplete == false)
 			{
+				AllJoyn.TriggerCallbacks(); // Pump messages
 				System.Threading.Thread.Sleep(1);
 			}
 
@@ -157,10 +158,6 @@ namespace basic_client
 					}
 				}
 			}
-
-			// Dispose of objects now
-			sMsgBus.Dispose();
-			sBusListener.Dispose();
 
 			Console.WriteLine("basic client exiting with status {0} ({1})\n", status, status.ToString());
 		}

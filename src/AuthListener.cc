@@ -76,7 +76,6 @@ class AuthListenerCallbackC : public AuthListener {
   private:
     alljoyn_authlistener_callbacks callbacks;
     const void* context;
-
 };
 
 }

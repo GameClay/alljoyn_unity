@@ -1,4 +1,6 @@
 using System;
+using System.Threading;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace AllJoynUnity
@@ -10,6 +12,9 @@ namespace AllJoynUnity
 			public BusAttachment(string applicationName, bool allowRemoteMessages)
 			{
 				_busAttachment = alljoyn_busattachment_create(applicationName, allowRemoteMessages ? 1 : 0);
+
+				if(_sBusAttachmentMap == null) _sBusAttachmentMap = new Dictionary<IntPtr, BusAttachment>();
+				_sBusAttachmentMap.Add(_busAttachment, this);
 			}
 
 			public QStatus CreateInterface(string interfaceName, bool secure, out InterfaceDescription iface)
@@ -123,6 +128,11 @@ namespace AllJoynUnity
 				return alljoyn_busattachment_unbindsessionport(_busAttachment, sessionPort);
 			}
 
+			internal static BusAttachment MapBusAttachment(IntPtr key)
+			{
+				return _sBusAttachmentMap[key];
+			}
+
 			#region IDisposable
 			public void Dispose()
 			{
@@ -134,7 +144,12 @@ namespace AllJoynUnity
 			{
 				if(!_isDisposed)
 				{
-					alljoyn_busattachment_destroy(_busAttachment);
+					Thread destroyThread = new Thread((object o) => { alljoyn_busattachment_destroy(_busAttachment); });
+					while(destroyThread.IsAlive)
+					{
+						AllJoyn.TriggerCallbacks();
+						Thread.Sleep(0);
+					}
 					_busAttachment = IntPtr.Zero;
 				}
 				_isDisposed = true;
@@ -243,6 +258,8 @@ namespace AllJoynUnity
 			#region Data
 			IntPtr _busAttachment;
 			bool _isDisposed = false;
+
+			static Dictionary<IntPtr, BusAttachment> _sBusAttachmentMap;
 			#endregion
 		}
 	}
