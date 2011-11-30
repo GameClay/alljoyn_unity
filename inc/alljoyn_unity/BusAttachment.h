@@ -234,7 +234,7 @@ extern AJ_API const alljoyn_interfacedescription alljoyn_busattachment_getinterf
  *      - Other error status codes indicating a failure.
  */
 extern AJ_API QStatus alljoyn_busattachment_joinsession(alljoyn_busattachment bus, const char* sessionHost,
-                                                        alljoyn_sessionport sessionPort, alljoyn_buslistener listener,
+                                                        alljoyn_sessionport sessionPort, alljoyn_sessionlistener listener,
                                                         alljoyn_sessionid* sessionId, alljoyn_sessionopts opts);
 
 /**

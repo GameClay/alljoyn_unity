@@ -96,7 +96,7 @@ const alljoyn_interfacedescription alljoyn_busattachment_getinterface(alljoyn_bu
 }
 
 QStatus alljoyn_busattachment_joinsession(alljoyn_busattachment bus, const char* sessionHost,
-                                          alljoyn_sessionport sessionPort, alljoyn_buslistener listener,
+                                          alljoyn_sessionport sessionPort, alljoyn_sessionlistener listener,
                                           alljoyn_sessionid* sessionId, alljoyn_sessionopts opts)
 {
     return ((ajn::BusAttachment*)bus)->JoinSession(sessionHost, (ajn::SessionPort)sessionPort,
