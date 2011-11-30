@@ -20,10 +20,16 @@ namespace ajn {
 
 std::list<DeferredCallback*> DeferredCallback::sPendingCallbacks;
 pthread_t DeferredCallback::sMainThread = pthread_self();
+bool DeferredCallback::sMainThreadCallbacksOnly = false;
 
 }
 
 int alljoyn_unity_deferred_callbacks_process()
 {
     return ajn::DeferredCallback::TriggerCallbacks();
+}
+
+void alljoin_unity_set_deferred_callback_mainthread_only(int mainthread_only)
+{
+    ajn::DeferredCallback::sMainThreadCallbacksOnly = (mainthread_only == 1 ? true : false);
 }

@@ -26,6 +26,12 @@ namespace AllJoynUnity
 			return alljoyn_unity_deferred_callbacks_process();
 		}
 
+		/// Enable/disable main-thread-only callbacks.
+		public static void SetMainThreadOnlyCallbacks(bool mainThreadOnly)
+		{
+			alljoin_unity_set_deferred_callback_mainthread_only(mainThreadOnly ? 1 : 0);
+		}
+
 		[Flags]
 		public enum TransportMask : ushort
 		{
@@ -336,6 +342,9 @@ namespace AllJoynUnity
 
 		[DllImport(DLL_IMPORT_TARGET)]
 		private extern static int alljoyn_unity_deferred_callbacks_process();
+
+		[DllImport(DLL_IMPORT_TARGET)]
+		private extern static void alljoin_unity_set_deferred_callback_mainthread_only(int mainthread_only);
 		#endregion
 	}
 }

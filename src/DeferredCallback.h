@@ -58,8 +58,8 @@ class DeferredCallback {
 
     bool IsMainThread()
     {
-        bool ret = (pthread_equal(sMainThread, pthread_self()) != 0);
-        //printf("Executing on %s thread\n", ret ? "main" : "alternate");
+        bool ret = (sMainThreadCallbacksOnly ? (pthread_equal(sMainThread, pthread_self()) != 0) : true);
+        printf("Executing on %s thread\n", ret ? "main" : "alternate");
         return ret;
     }
 
@@ -78,6 +78,9 @@ class DeferredCallback {
     volatile sig_atomic_t finished;
     static std::list<DeferredCallback*> sPendingCallbacks;
     static pthread_t sMainThread;
+
+  public:
+    static bool sMainThreadCallbacksOnly;
 };
 
 template <typename R, typename T>

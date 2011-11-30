@@ -31,6 +31,11 @@ extern "C" {
  */
 extern AJ_API int alljoyn_unity_deferred_callbacks_process();
 
+/**
+ * Enable/disable main thread callback behavior.
+ */
+extern AJ_API void alljoin_unity_set_deferred_callback_mainthread_only(int mainthread_only);
+
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
