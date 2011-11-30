@@ -30,7 +30,7 @@ namespace basic_client
 					AllJoyn.SessionOpts opts = new AllJoyn.SessionOpts(AllJoyn.SessionOpts.TrafficType.Messages, false,
 						AllJoyn.SessionOpts.ProximityType.Any, AllJoyn.TransportMask.Any);
 
-					AllJoyn.QStatus status = sMsgBus.JoinSession(name, SERVICE_PORT, this, out sSessionId, opts);
+					AllJoyn.QStatus status = sMsgBus.JoinSession(name, SERVICE_PORT, null, out sSessionId, opts);
 					if(status)
 					{
 						Console.WriteLine("JoinSession SUCCESS (Session id={0})", sSessionId);

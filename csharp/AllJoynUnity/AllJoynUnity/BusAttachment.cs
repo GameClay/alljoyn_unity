@@ -57,7 +57,7 @@ namespace AllJoynUnity
 			{
 				alljoyn_busattachment_unregisterbuslistener(_busAttachment, listener.UnmanagedPtr);
 			}
-			
+
 			public QStatus FindAdvertisedName(string namePrefix)
 			{
 				return alljoyn_busattachment_findadvertisedname(_busAttachment, namePrefix);
@@ -67,14 +67,14 @@ namespace AllJoynUnity
 			{
 				return alljoyn_busattachment_cancelfindadvertisedname(_busAttachment, namePrefix);
 			}
-			
-			public QStatus JoinSession(string sessionHost, ushort sessionPort, BusListener listener,
+
+			public QStatus JoinSession(string sessionHost, ushort sessionPort, SessionListener listener,
 				out uint sessionId, SessionOpts opts)
 			{
 				IntPtr optsPtr = opts.UnmanagedPtr;
 				uint sessionId_out = 0;
 				int qstatus = alljoyn_busattachment_joinsession(_busAttachment, sessionHost, sessionPort,
-					listener.UnmanagedPtr, ref sessionId_out, optsPtr);
+					(listener == null ? IntPtr.Zero : listener.UnmanagedPtr), ref sessionId_out, optsPtr);
 				sessionId = sessionId_out;
 				return qstatus;
 			}
