@@ -42,7 +42,7 @@ class SessionPortListenerCallbackC : public SessionPortListener {
 
     virtual bool AcceptSessionJoiner(SessionPort sessionPort, const char* joiner, const SessionOpts& opts)
     {
-        QC_BOOL ret = QC_FALSE;
+        QC_BOOL ret = SessionPortListener::AcceptSessionJoiner(sessionPort, joiner, opts) ? QC_TRUE : QC_FALSE;
         if (callbacks.accept_session_joiner != NULL) {
             ret = callbacks.accept_session_joiner(context, sessionPort, joiner, (alljoyn_sessionopts)(&opts));
             DeferredCallback_4<QC_BOOL, const void*, SessionPort, const char*, alljoyn_sessionopts>* dcb =

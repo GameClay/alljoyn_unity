@@ -43,17 +43,15 @@ class AuthListenerCallbackC : public AuthListener {
     virtual bool RequestCredentials(const char* authMechanism, const char* peerName, uint16_t authCount,
                                     const char* userName, uint16_t credMask, Credentials& credentials)
     {
-        bool ret = true;
-        if (callbacks.request_credentials != NULL) {
-            ret = (callbacks.request_credentials(context, authMechanism, peerName, authCount, userName,
-                                                 credMask, (alljoyn_credentials)(&credentials)) == QC_TRUE ? true : false);
-        }
+        assert(callbacks.request_credentials != NULL && "request_credentials callback must be specified");
+        bool ret = (callbacks.request_credentials(context, authMechanism, peerName, authCount, userName,
+                                                  credMask, (alljoyn_credentials)(&credentials)) == QC_TRUE ? true : false);
         return ret;
     }
 
     virtual bool VerifyCredentials(const char* authMechanism, const char* peerName, const Credentials& credentials)
     {
-        bool ret = true;
+        bool ret = AuthListener::VerifyCredentials(authMechanism, peerName, credentials);
         if (callbacks.verify_credentials != NULL) {
             ret = (callbacks.verify_credentials(context, authMechanism, peerName, (alljoyn_credentials)(&credentials)) == QC_TRUE ? true : false);
         }
@@ -69,9 +67,8 @@ class AuthListenerCallbackC : public AuthListener {
 
     virtual void AuthenticationComplete(const char* authMechanism, const char* peerName, bool success)
     {
-        if (callbacks.authentication_complete != NULL) {
-            callbacks.authentication_complete(context, authMechanism, peerName, (success == true ? QC_TRUE : QC_FALSE));
-        }
+        assert(callbacks.authentication_complete != NULL && "authentication_complete callback must be specified");
+        callbacks.authentication_complete(context, authMechanism, peerName, (success == true ? QC_TRUE : QC_FALSE));
     }
   private:
     alljoyn_authlistener_callbacks callbacks;
