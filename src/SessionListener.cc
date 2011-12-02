@@ -45,7 +45,7 @@ class SessionListenerCallbackC : public SessionListener {
         if (callbacks.session_lost != NULL) {
             DeferredCallback_2<void, const void*, SessionId>* dcb =
                 new DeferredCallback_2<void, const void*, SessionId>(callbacks.session_lost, context, sessionId);
-            dcb->Execute();
+            DEFERRED_CALLBACK_EXECUTE(dcb);
         }
     }
 
@@ -54,7 +54,7 @@ class SessionListenerCallbackC : public SessionListener {
         if (callbacks.session_member_added != NULL) {
             DeferredCallback_3<void, const void*, SessionId, const char*>* dcb =
                 new DeferredCallback_3<void, const void*, SessionId, const char*>(callbacks.session_member_added, context, sessionId, uniqueName);
-            dcb->Execute();
+            DEFERRED_CALLBACK_EXECUTE(dcb);
         }
     }
 
@@ -63,7 +63,7 @@ class SessionListenerCallbackC : public SessionListener {
         if (callbacks.session_member_removed != NULL) {
             DeferredCallback_3<void, const void*, SessionId, const char*>* dcb =
                 new DeferredCallback_3<void, const void*, SessionId, const char*>(callbacks.session_member_removed, context, sessionId, uniqueName);
-            dcb->Execute();
+            DEFERRED_CALLBACK_EXECUTE(dcb);
         }
     }
   protected:

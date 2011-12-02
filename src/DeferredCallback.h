@@ -23,7 +23,12 @@
 #include <pthread.h>
 #include <unistd.h>
 
-#include <stdio.h>
+#if 1
+#   include <stdio.h>
+#   define DEFERRED_CALLBACK_EXECUTE(cb) cb->Execute(); printf("%s (%d) -- Executing on %s thread\n", __FILE__, __LINE__, DeferredCallback::IsMainThread() ? "main" : "alternate")
+#else
+#   define DEFERRED_CALLBACK_EXECUTE(cb) cb->Execute()
+#endif
 
 namespace ajn {
 
@@ -49,18 +54,16 @@ class DeferredCallback {
         return ret;
     }
 
+    static bool IsMainThread()
+    {
+        return (sMainThreadCallbacksOnly ? (pthread_equal(sMainThread, pthread_self()) != 0) : true);
+    }
+
   protected:
     void Wait()
     {
         while (!executeNow)
             usleep(1);
-    }
-
-    bool IsMainThread()
-    {
-        bool ret = (sMainThreadCallbacksOnly ? (pthread_equal(sMainThread, pthread_self()) != 0) : true);
-        printf("Executing on %s thread\n", ret ? "main" : "alternate");
-        return ret;
     }
 
     class ScopeFinishedMarker {

@@ -95,7 +95,7 @@ class BusObjectC : public BusObject {
         if (callbacks.property_get != NULL) {
             DeferredCallback_4<QStatus, const void*, const char*, const char*, alljoyn_msgargs>* dcb =
                 new DeferredCallback_4<QStatus, const void*, const char*, const char*, alljoyn_msgargs>(callbacks.property_get, context, ifcName, propName, (alljoyn_msgargs)(&val));
-            ret = dcb->Execute();
+            ret = DEFERRED_CALLBACK_EXECUTE(dcb);
         }
         return ret;
     }
@@ -106,7 +106,7 @@ class BusObjectC : public BusObject {
         if (callbacks.property_set != NULL) {
             DeferredCallback_4<QStatus, const void*, const char*, const char*, alljoyn_msgargs>* dcb =
                 new DeferredCallback_4<QStatus, const void*, const char*, const char*, alljoyn_msgargs>(callbacks.property_set, context, ifcName, propName, (alljoyn_msgargs)(&val));
-            ret = dcb->Execute();
+            ret = DEFERRED_CALLBACK_EXECUTE(dcb);
         }
         return ret;
     }
@@ -118,7 +118,7 @@ class BusObjectC : public BusObject {
         if (callbacks.object_registered != NULL) {
             DeferredCallback_1<void, const void*>* dcb =
                 new DeferredCallback_1<void, const void*>(callbacks.object_registered, context);
-            dcb->Execute();
+            DEFERRED_CALLBACK_EXECUTE(dcb);
         }
     }
 
@@ -130,7 +130,7 @@ class BusObjectC : public BusObject {
         if (callbacks.object_unregistered != NULL) {
             DeferredCallback_1<void, const void*>* dcb =
                 new DeferredCallback_1<void, const void*>(callbacks.object_unregistered, context);
-            dcb->Execute();
+            DEFERRED_CALLBACK_EXECUTE(dcb);
         }
     }
 
