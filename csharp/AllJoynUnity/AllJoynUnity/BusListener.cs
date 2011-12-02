@@ -129,6 +129,7 @@ namespace AllJoynUnity
 					}
 					
 					Thread destroyThread = new Thread((object o) => { alljoyn_buslistener_destroy(_busListener); });
+					destroyThread.Start();
 					while(destroyThread.IsAlive)
 					{
 						AllJoyn.TriggerCallbacks();

@@ -193,6 +193,7 @@ namespace AllJoynUnity
 				if(!_isDisposed)
 				{
 					Thread destroyThread = new Thread((object o) => { alljoyn_busobject_destroy(_busObject); });
+					destroyThread.Start();
 					while(destroyThread.IsAlive)
 					{
 						AllJoyn.TriggerCallbacks();

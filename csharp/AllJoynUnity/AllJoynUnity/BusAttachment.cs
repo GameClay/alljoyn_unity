@@ -121,10 +121,11 @@ namespace AllJoynUnity
 			{
 				QStatus ret = QStatus.OK;
 				ushort otherSessionPort = sessionPort;
-				Thread bindThread = new Thread((object o) => { 
+				Thread bindThread = new Thread((object o) => {
 					ret = alljoyn_busattachment_bindsessionport(_busAttachment, ref otherSessionPort,
 						opts.UnmanagedPtr, listener.UnmanagedPtr);
 				});
+				bindThread.Start();
 				while(bindThread.IsAlive)
 				{
 					AllJoyn.TriggerCallbacks();
@@ -137,9 +138,10 @@ namespace AllJoynUnity
 			public QStatus UnbindSessionPort(ushort sessionPort)
 			{
 				QStatus ret = QStatus.OK;
-				Thread bindThread = new Thread((object o) => { 
+				Thread bindThread = new Thread((object o) => {
 					ret = alljoyn_busattachment_unbindsessionport(_busAttachment, sessionPort);
 				});
+				bindThread.Start();
 				while(bindThread.IsAlive)
 				{
 					AllJoyn.TriggerCallbacks();
@@ -165,6 +167,7 @@ namespace AllJoynUnity
 				if(!_isDisposed)
 				{
 					Thread destroyThread = new Thread((object o) => { alljoyn_busattachment_destroy(_busAttachment); });
+					destroyThread.Start();
 					while(destroyThread.IsAlive)
 					{
 						AllJoyn.TriggerCallbacks();
