@@ -22,6 +22,7 @@
 #include <signal.h>
 #include <pthread.h>
 #include <unistd.h>
+#include <qcc/Mutex.h>
 
 #if 1
 #   include <stdio.h>
@@ -42,14 +43,16 @@ class DeferredCallback {
     {
         int ret = 0;
         while (!sPendingCallbacks.empty()) {
+            sCallbackListLock.Lock(MUTEX_CONTEXT);
             DeferredCallback* cb = sPendingCallbacks.front();
+            sPendingCallbacks.pop_front();
+            sCallbackListLock.Unlock(MUTEX_CONTEXT);
             if (!cb->executeNow)
                 cb->executeNow = true;
             while (!cb->finished)
                 usleep(1);
             delete cb;
             ret++;
-            sPendingCallbacks.pop_front();
         }
         return ret;
     }
@@ -76,6 +79,7 @@ class DeferredCallback {
 
   private:
     volatile sig_atomic_t executeNow;
+    static qcc::Mutex sCallbackListLock;
 
   protected:
     volatile sig_atomic_t finished;
@@ -98,7 +102,9 @@ class DeferredCallback_1 : public DeferredCallback {
     virtual R Execute()
     {
         ScopeFinishedMarker finisher(&finished);
+        sCallbackListLock.Lock(MUTEX_CONTEXT);
         sPendingCallbacks.push_back(this);
+        sCallbackListLock.Unlock(MUTEX_CONTEXT);
         if (!IsMainThread()) Wait();
         return _callback(_param1);
     }
@@ -120,7 +126,9 @@ class DeferredCallback_2 : public DeferredCallback {
     virtual R Execute()
     {
         ScopeFinishedMarker finisher(&finished);
+        sCallbackListLock.Lock(MUTEX_CONTEXT);
         sPendingCallbacks.push_back(this);
+        sCallbackListLock.Unlock(MUTEX_CONTEXT);
         if (!IsMainThread()) Wait();
         return _callback(_param1, _param2);
     }
@@ -144,7 +152,9 @@ class DeferredCallback_3 : public DeferredCallback {
     virtual R Execute()
     {
         ScopeFinishedMarker finisher(&finished);
+        sCallbackListLock.Lock(MUTEX_CONTEXT);
         sPendingCallbacks.push_back(this);
+        sCallbackListLock.Unlock(MUTEX_CONTEXT);
         if (!IsMainThread()) Wait();
         return _callback(_param1, _param2, _param3);
     }
@@ -169,7 +179,9 @@ class DeferredCallback_4 : public DeferredCallback {
     virtual R Execute()
     {
         ScopeFinishedMarker finisher(&finished);
+        sCallbackListLock.Lock(MUTEX_CONTEXT);
         sPendingCallbacks.push_back(this);
+        sCallbackListLock.Unlock(MUTEX_CONTEXT);
         if (!IsMainThread()) Wait();
         return _callback(_param1, _param2, _param3, _param4);
     }
