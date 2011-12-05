@@ -73,8 +73,18 @@ namespace AllJoynUnity
 			{
 				IntPtr optsPtr = opts.UnmanagedPtr;
 				uint sessionId_out = 0;
-				int qstatus = alljoyn_busattachment_joinsession(_busAttachment, sessionHost, sessionPort,
-					(listener == null ? IntPtr.Zero : listener.UnmanagedPtr), ref sessionId_out, optsPtr);
+				int qstatus = 0;
+				Thread joinSessionThread = new Thread((object o) => {
+					qstatus = alljoyn_busattachment_joinsession(_busAttachment, sessionHost, sessionPort,
+						(listener == null ? IntPtr.Zero : listener.UnmanagedPtr), ref sessionId_out, optsPtr);
+				});
+				joinSessionThread.Start();
+				while(joinSessionThread.IsAlive)
+				{
+					AllJoyn.TriggerCallbacks();
+					Thread.Sleep(1);
+				}
+				
 				sessionId = sessionId_out;
 				return qstatus;
 			}
