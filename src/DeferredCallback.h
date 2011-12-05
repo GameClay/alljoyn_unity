@@ -24,7 +24,9 @@
 #include <unistd.h>
 #include <qcc/Mutex.h>
 
-#if 1
+//#define DEBUG_DEFERRED_CALLBACKS 1
+
+#if DEBUG_DEFERRED_CALLBACKS
 #   include <stdio.h>
 #   define DEFERRED_CALLBACK_EXECUTE(cb) cb->Execute(); printf("%s (%d) -- Executing on %s thread\n", __FILE__, __LINE__, DeferredCallback::IsMainThread() ? "main" : "alternate")
 #else
@@ -47,8 +49,7 @@ class DeferredCallback {
             DeferredCallback* cb = sPendingCallbacks.front();
             sPendingCallbacks.pop_front();
             sCallbackListLock.Unlock(MUTEX_CONTEXT);
-            if (!cb->executeNow)
-                cb->executeNow = true;
+            cb->executeNow = true;
             while (!cb->finished)
                 usleep(1);
             delete cb;
