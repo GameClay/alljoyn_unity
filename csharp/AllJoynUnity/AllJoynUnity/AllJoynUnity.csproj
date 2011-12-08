@@ -46,6 +46,7 @@
     <Compile Include="DBus.cs" />
     <Compile Include="SessionPortListener.cs" />
     <Compile Include="SessionListener.cs" />
+    <Compile Include="AuthListener.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
