@@ -185,8 +185,10 @@ const char* alljoyn_busobject_getpath(alljoyn_busobject bus)
 size_t alljoyn_busobject_getname(alljoyn_busobject bus, char* buffer, size_t bufferSz)
 {
     qcc::String name = ((ajn::BusObjectC*)bus)->GetName();
-    buffer[bufferSz - 1] = '\0';
-    strncpy(buffer, name.c_str(), bufferSz - 1);
+    if (buffer != NULL && bufferSz > 0) {
+        buffer[bufferSz - 1] = '\0';
+        strncpy(buffer, name.c_str(), bufferSz - 1);
+    }
     return name.length();
 }
 

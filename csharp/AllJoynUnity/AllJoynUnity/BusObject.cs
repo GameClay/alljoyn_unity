@@ -89,7 +89,14 @@ namespace AllJoynUnity
 			{
 				get
 				{
-					return ""; // TODO
+					UIntPtr nameSz = alljoyn_busobject_getname(_busObject, IntPtr.Zero, (UIntPtr)0);
+					byte[] sink = new byte[(int)nameSz];
+
+					GCHandle gch = GCHandle.Alloc(sink, GCHandleType.Pinned);
+					alljoyn_busobject_getname(_busObject, gch.AddrOfPinnedObject(), nameSz);
+					gch.Free();
+
+					return System.Text.ASCIIEncoding.ASCII.GetString(sink);
 				}
 			}
 			#endregion
@@ -160,6 +167,9 @@ namespace AllJoynUnity
 
 			[DllImport(DLL_IMPORT_TARGET)]
 			private extern static IntPtr alljoyn_busobject_getpath(IntPtr bus);
+
+			[DllImport(DLL_IMPORT_TARGET)]
+			private extern static UIntPtr alljoyn_busobject_getname(IntPtr bus, IntPtr buffer, UIntPtr bufferSz);
 
 			[DllImport(DLL_IMPORT_TARGET)]
 			private extern static int alljoyn_busobject_addinterface(IntPtr bus, IntPtr iface);
