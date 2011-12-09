@@ -27,6 +27,56 @@ namespace AllJoynUnity
 				_interfaceDescription = interfaceDescription;
 			}
 
+			#region Equality
+			public static bool operator ==(InterfaceDescription one, InterfaceDescription other)
+			{
+				return (alljoyn_interfacedescription_eql(one.UnmanagedPtr, other.UnmanagedPtr) == 1 ? true : false);
+			}
+
+			public static bool operator !=(InterfaceDescription one, InterfaceDescription other)
+			{
+				return (alljoyn_interfacedescription_eql(one.UnmanagedPtr, other.UnmanagedPtr) == 1 ? false : true);
+			}
+
+			public override bool Equals(object o) 
+			{
+				try
+				{
+					return (this == (InterfaceDescription)o);
+				}
+				catch
+				{
+					return false;
+				}
+			}
+			#endregion
+
+			#region Properties
+			public bool HasProperties
+			{
+				get
+				{
+					return (alljoyn_interfacedescription_hasproperties(_interfaceDescription) == 1 ? true : false);
+				}
+			}
+
+			public string Name
+			{
+				get
+				{
+					return Marshal.PtrToStringAuto(alljoyn_interfacedescription_getname(_interfaceDescription));
+				}
+			}
+
+			public bool IsSecure
+			{
+				get
+				{
+					return (alljoyn_interfacedescription_issecure(_interfaceDescription) == 1 ? true : false);
+				}
+			}
+			#endregion
+
 			public QStatus AddMember(Message.Type type, string name, string inputSignature,
 				string outputSignature, string argNames, AnnotationFlags annotation = AnnotationFlags.Default)
 			{
@@ -42,7 +92,7 @@ namespace AllJoynUnity
 			public Member GetMember(string name)
 			{
 				_Member retMember = new _Member();
-				if(alljoyn_interfacedescription_getmember(_interfaceDescription, name, ref retMember) > 0)
+				if(alljoyn_interfacedescription_getmember(_interfaceDescription, name, ref retMember) == 1)
 				{
 					return new Member(retMember);
 				}
@@ -73,13 +123,64 @@ namespace AllJoynUnity
 				return ret;
 			}
 
+			public bool HasMember(string name, string inSig, string outSig)
+			{
+				return (alljoyn_interfacedescription_hasmember(_interfaceDescription,
+					name, inSig, outSig) == 1 ? true : false );
+			}
+
+			public Property GetProperty(string name)
+			{
+				_Property retProp = new _Property();
+				if(alljoyn_interfacedescription_getproperty(_interfaceDescription, name, ref retProp) == 1)
+				{
+					return new Property(retProp);
+				}
+				else
+				{
+					return null;
+				}
+			}
+
+			public Property[] GetProperties()
+			{
+				UIntPtr numProperties = alljoyn_interfacedescription_getproperties(_interfaceDescription,
+					IntPtr.Zero, (UIntPtr)0);
+				_Property[] props = new _Property[(int)numProperties];
+				GCHandle gch = GCHandle.Alloc(props, GCHandleType.Pinned);
+				UIntPtr numFilledProperties = alljoyn_interfacedescription_getproperties(_interfaceDescription,
+					gch.AddrOfPinnedObject(), numProperties);
+				if(numProperties != numFilledProperties)
+				{
+					// Warn?
+				}
+				Property[] ret = new Property[(int)numFilledProperties];
+				for(int i = 0; i < ret.Length; i++)
+				{
+					ret[i] = new Property(props[i]);
+				}
+
+				return ret;
+			}
+
+			public QStatus AddProperty(string name, string signature, AccessFlags access)
+			{
+				return alljoyn_interfacedescription_addproperty(_interfaceDescription,
+					name, signature, (byte)access);
+			}
+
+			public bool HasProperty(string name)
+			{
+				return (alljoyn_interfacedescription_hasproperty(_interfaceDescription, name) == 1 ? true : false);
+			}
+
 			public class Member
 			{
 				public InterfaceDescription Iface
 				{
 					get
 					{
-						return null; //TODO
+						return new InterfaceDescription(_member.iface);
 					}
 				}
 
@@ -146,6 +247,47 @@ namespace AllJoynUnity
 				#endregion
 			}
 
+			public class Property
+			{
+				public string Name
+				{
+					get
+					{
+						return Marshal.PtrToStringAuto(_property.name);
+					}
+				}
+
+				public string Signature
+				{
+					get
+					{
+						return Marshal.PtrToStringAuto(_property.signature);
+					}
+				}
+
+				public AccessFlags Access
+				{
+					get
+					{
+						return (AccessFlags)_property.access;
+					}
+				}
+
+				internal Property(_Property property)
+				{
+					_property = property;
+				}
+
+				internal Property(IntPtr propertyPointer)
+				{
+					_property = (_Property)Marshal.PtrToStructure(propertyPointer, typeof(_Property));
+				}
+
+				#region Data
+				internal _Property _property;
+				#endregion
+			}
+
 			#region DLL Imports
 			[DllImport(DLL_IMPORT_TARGET)]
 			private extern static int alljoyn_interfacedescription_addmember(
@@ -164,10 +306,47 @@ namespace AllJoynUnity
 			private extern static int alljoyn_interfacedescription_getmember(IntPtr iface,
 				[MarshalAs(UnmanagedType.LPStr)] string name,
 				ref _Member member);
-			
+
 			[DllImport(DLL_IMPORT_TARGET)]
 			private extern static UIntPtr alljoyn_interfacedescription_getmembers(IntPtr iface,
 				IntPtr members, UIntPtr numMembers);
+
+			[DllImport(DLL_IMPORT_TARGET)]
+			private extern static int alljoyn_interfacedescription_hasmember(IntPtr iface,
+				[MarshalAs(UnmanagedType.LPStr)] string name,
+				[MarshalAs(UnmanagedType.LPStr)] string inSig,
+				[MarshalAs(UnmanagedType.LPStr)] string outSig);
+
+			[DllImport(DLL_IMPORT_TARGET)]
+			private extern static int alljoyn_interfacedescription_getproperty(IntPtr iface,
+				[MarshalAs(UnmanagedType.LPStr)] string name,
+				ref _Property property);
+
+			[DllImport(DLL_IMPORT_TARGET)]
+			private extern static UIntPtr alljoyn_interfacedescription_getproperties(IntPtr iface,
+				IntPtr props, UIntPtr numProps);
+
+			[DllImport(DLL_IMPORT_TARGET)]
+			private extern static int alljoyn_interfacedescription_addproperty(IntPtr iface,
+				[MarshalAs(UnmanagedType.LPStr)] string name,
+				[MarshalAs(UnmanagedType.LPStr)] string signature,
+				byte access);
+
+			[DllImport(DLL_IMPORT_TARGET)]
+			private extern static int alljoyn_interfacedescription_hasproperty(IntPtr iface,
+				[MarshalAs(UnmanagedType.LPStr)] string name);
+
+			[DllImport(DLL_IMPORT_TARGET)]
+			private extern static int alljoyn_interfacedescription_eql(IntPtr one, IntPtr other);
+
+			[DllImport(DLL_IMPORT_TARGET)]
+			private extern static int alljoyn_interfacedescription_hasproperties(IntPtr iface);
+
+			[DllImport(DLL_IMPORT_TARGET)]
+			private extern static IntPtr alljoyn_interfacedescription_getname(IntPtr iface);
+
+			[DllImport(DLL_IMPORT_TARGET)]
+			private extern static int alljoyn_interfacedescription_issecure(IntPtr iface);
 			#endregion
 
 			#region Internal Structures
@@ -182,6 +361,15 @@ namespace AllJoynUnity
 				public IntPtr argNames;
 				public byte annotation;
 				private IntPtr internal_member;
+			}
+
+			[StructLayout(LayoutKind.Sequential)]
+			internal struct _Property
+			{
+				public IntPtr name;
+				public IntPtr signature;
+				public byte access;
+				private IntPtr internal_property;
 			}
 			#endregion
 
