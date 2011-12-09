@@ -7,6 +7,19 @@ namespace AllJoynUnity
 	{
 		public class Credentials : IDisposable
 		{
+			[Flags]
+			public enum CredentialFlags : ushort
+			{
+				Password = 0x0001,
+				UserName = 0x0002,
+				CertChain = 0x0004,
+				PrivateKey = 0x0008,
+				LogonEntry = 0x0010,
+				Expiration = 0x0020,
+				NewPassword = 0x1001,
+				OneTimePassword = 0x2001
+			}
+
 			public Credentials()
 			{
 				_credentials = alljoyn_credentials_create();
@@ -18,9 +31,9 @@ namespace AllJoynUnity
 				_isDisposed = true;
 			}
 
-			public bool IsSet(ushort credMask)
+			public bool IsSet(CredentialFlags credMask)
 			{
-				return (alljoyn_credentials_isset(_credentials, credMask) == 1 ? true : false);
+				return (alljoyn_credentials_isset(_credentials, (ushort)credMask) == 1 ? true : false);
 			}
 
 			public void Clear()

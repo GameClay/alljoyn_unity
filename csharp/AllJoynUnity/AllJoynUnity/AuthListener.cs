@@ -28,7 +28,7 @@ namespace AllJoynUnity
 
 			#region Virtual Methods
 			protected abstract bool RequestCredentials(string authMechanism, string peerName, ushort authCount,
-				string userName, ushort credMask, Credentials credentials);
+				string userName, Credentials.CredentialFlags credMask, Credentials credentials);
 
 			protected virtual bool VerifyCredentials(string authMechanism, string peerName, Credentials credentials)
 			{
@@ -47,7 +47,7 @@ namespace AllJoynUnity
 				IntPtr userName, ushort credMask, IntPtr credentials)
 			{
 				return (RequestCredentials(Marshal.PtrToStringAuto(authMechanism), Marshal.PtrToStringAuto(peerName),
-					authCount, Marshal.PtrToStringAuto(userName), credMask, new Credentials(credentials)) ? 1 : 0);
+					authCount, Marshal.PtrToStringAuto(userName), (Credentials.CredentialFlags)credMask, new Credentials(credentials)) ? 1 : 0);
 			}
 
 			private int _VerifyCredentials(IntPtr context, IntPtr authMechanism, IntPtr peerName,
