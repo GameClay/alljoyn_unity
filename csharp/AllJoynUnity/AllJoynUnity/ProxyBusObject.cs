@@ -11,6 +11,12 @@ namespace AllJoynUnity
 			{
 				_proxyBusObject = alljoyn_proxybusobject_create(bus.UnmanagedPtr, service, path, sessionId);
 			}
+
+			internal ProxyBusObject(IntPtr busObject)
+			{
+				_proxyBusObject = busObject;
+				_isDisposed = true;
+			}
 			
 			public QStatus AddInterface(InterfaceDescription iface)
 			{
