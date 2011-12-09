@@ -81,6 +81,33 @@ namespace AllJoynUnity
 				return Marshal.PtrToStringAuto(alljoyn_msgargs_as_string(arg._msgArgs, (UIntPtr)arg._index));
 			}
 
+			public string ObjectPath
+			{
+				get
+				{
+					return Marshal.PtrToStringAuto(alljoyn_msgargs_as_objpath(_msgArgs, (UIntPtr)_index));
+				}
+				set
+				{
+					if(_bytePtr != IntPtr.Zero)
+					{
+						Marshal.FreeCoTaskMem(_bytePtr);
+						_bytePtr = IntPtr.Zero;
+					}
+					UIntPtr numArgs = (UIntPtr)1;
+					_bytePtr = Marshal.StringToCoTaskMemAuto((string)value);
+					alljoyn_msgargs_set(_msgArgs, (UIntPtr)_index, ref numArgs, "o", _bytePtr);
+				}
+			}
+
+			public MsgArg Variant
+			{
+				get
+				{
+					return new MsgArg(alljoyn_msgargs_as_variant(_msgArgs, (UIntPtr)_index));
+				}
+			}
+
 			public void Set(object value)
 			{
 				UIntPtr numArgs = (UIntPtr)1;
@@ -98,9 +125,7 @@ namespace AllJoynUnity
 				ALLJOYN_DICT_ENTRY       = 'e',    ///< AllJoyn dictionary or map container type - an array of key-value pairs
 				ALLJOYN_SIGNATURE        = 'g',    ///< AllJoyn signature basic type
 				ALLJOYN_HANDLE           = 'h',    ///< AllJoyn socket handle basic type
-				ALLJOYN_OBJECT_PATH      = 'o',    ///< AllJoyn Name of an AllJoyn object instance basic type
 				ALLJOYN_STRUCT           = 'r',    ///< AllJoyn struct container type
-				ALLJOYN_VARIANT          = 'v',    ///< AllJoyn variant container type
 				*/
 
 				if(value.GetType() == typeof(string))
@@ -187,6 +212,12 @@ namespace AllJoynUnity
 
 			[DllImport(DLL_IMPORT_TARGET)]
 			private static extern IntPtr alljoyn_msgargs_as_string(IntPtr args, UIntPtr idx);
+
+			[DllImport(DLL_IMPORT_TARGET)]
+			private static extern IntPtr alljoyn_msgargs_as_objpath(IntPtr args, UIntPtr idx);
+
+			[DllImport(DLL_IMPORT_TARGET)]
+			private static extern IntPtr alljoyn_msgargs_as_variant(IntPtr args, UIntPtr idx);
 
 			[DllImport(DLL_IMPORT_TARGET)]
 			private static extern int alljoyn_msgargs_set(IntPtr args, UIntPtr argOffset, ref UIntPtr numArgs, 

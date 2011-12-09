@@ -131,7 +131,7 @@ void alljoyn_msgargs_as_dictentry(const alljoyn_msgargs args, size_t idx,
 
 alljoyn_msgargs alljoyn_msgargs_as_variant(const alljoyn_msgargs args, size_t idx)
 {
-    return (alljoyn_msgargs)((ajn::MsgArg*)args)[idx].v_dictEntry.val;
+    return (alljoyn_msgargs)((ajn::MsgArg*)args)[idx].v_variant.val;
 }
 
 void alljoyn_msgargs_as_scalararray(const alljoyn_msgargs args, size_t idx,
