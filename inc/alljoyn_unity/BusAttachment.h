@@ -715,14 +715,14 @@ extern AJ_API QStatus alljoyn_busattachment_namehasowner(alljoyn_busattachment b
  *
  * @param bus    The bus on which to get the peer GUID.
  * @param name   Name of a remote peer or NULL to get the local (this application's) peer GUID.
- * @param guid   Returns the guid for the local or remote peer depending on the value of name.
- * @param guidSz Size of the guid buffer.
+ * @param guid   Returns the guid for the local or remote peer depending on the value of name, or NULL to get size.
+ * @param guidSz Size of the provided guid buffer, upon exit size of guid string.
  *
  * @return
  *      - #ER_OK if the requested GUID was obtained.
  *      - An error status otherwise.
  */
-extern AJ_API QStatus alljoyn_busattachment_getpeerguid(alljoyn_busattachment bus, const char* name, char* guid, size_t guidSz);
+extern AJ_API QStatus alljoyn_busattachment_getpeerguid(alljoyn_busattachment bus, const char* name, char* guid, size_t* guidSz);
 
 /**
  * This sets the debug level of the local AllJoyn daemon if that daemon

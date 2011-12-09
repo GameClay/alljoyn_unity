@@ -291,11 +291,14 @@ QStatus alljoyn_busattachment_namehasowner(alljoyn_busattachment bus, const char
     return ret;
 }
 
-QStatus alljoyn_busattachment_getpeerguid(alljoyn_busattachment bus, const char* name, char* guid, size_t guidSz)
+QStatus alljoyn_busattachment_getpeerguid(alljoyn_busattachment bus, const char* name, char* guid, size_t* guidSz)
 {
     qcc::String guidStr;
     QStatus ret = ((ajn::BusAttachment*)bus)->GetPeerGUID(name, guidStr);
-    strncpy(guid, guidStr.c_str(), guidSz);
+    if (guid != NULL) {
+        strncpy(guid, guidStr.c_str(), *guidSz);
+    }
+    *guidSz = guidStr.length();
     return ret;
 }
 
