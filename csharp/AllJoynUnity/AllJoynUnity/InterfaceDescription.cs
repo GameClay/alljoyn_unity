@@ -49,6 +49,11 @@ namespace AllJoynUnity
 					return false;
 				}
 			}
+
+			public override int GetHashCode()
+			{
+				return (int)_interfaceDescription;
+			}
 			#endregion
 
 			#region Properties
@@ -360,7 +365,9 @@ namespace AllJoynUnity
 				public IntPtr returnSignature;
 				public IntPtr argNames;
 				public byte annotation;
+#pragma warning disable 169 // Field is never used
 				private IntPtr internal_member;
+#pragma warning restore 169
 			}
 
 			[StructLayout(LayoutKind.Sequential)]
@@ -369,7 +376,9 @@ namespace AllJoynUnity
 				public IntPtr name;
 				public IntPtr signature;
 				public byte access;
+#pragma warning disable 169 // Field is never used
 				private IntPtr internal_property;
+#pragma warning restore 169
 			}
 			#endregion
 
