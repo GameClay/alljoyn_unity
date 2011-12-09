@@ -52,6 +52,27 @@ namespace AllJoynUnity
 				}
 			}
 
+			public Member[] GetMembers()
+			{
+				UIntPtr numMembers = alljoyn_interfacedescription_getmembers(_interfaceDescription,
+					IntPtr.Zero, (UIntPtr)0);
+				_Member[] members = new _Member[(int)numMembers];
+				GCHandle gch = GCHandle.Alloc(members, GCHandleType.Pinned);
+				UIntPtr numFilledMembers = alljoyn_interfacedescription_getmembers(_interfaceDescription,
+					gch.AddrOfPinnedObject(), numMembers);
+				if(numMembers != numFilledMembers)
+				{
+					// Warn?
+				}
+				Member[] ret = new Member[(int)numFilledMembers];
+				for(int i = 0; i < ret.Length; i++)
+				{
+					ret[i] = new Member(members[i]);
+				}
+
+				return ret;
+			}
+
 			public class Member
 			{
 				public InterfaceDescription Iface
@@ -146,8 +167,7 @@ namespace AllJoynUnity
 			
 			[DllImport(DLL_IMPORT_TARGET)]
 			private extern static UIntPtr alljoyn_interfacedescription_getmembers(IntPtr iface,
-				IntPtr members,
-				UIntPtr numMembers);
+				IntPtr members, UIntPtr numMembers);
 			#endregion
 
 			#region Internal Structures
