@@ -30,12 +30,14 @@ namespace AllJoynUnity
 			#region Equality
 			public static bool operator ==(InterfaceDescription one, InterfaceDescription other)
 			{
+				if((object)one == null && (object)other == null) return true;
+				else if((object)one == null || (object)other == null) return false;
 				return (alljoyn_interfacedescription_eql(one.UnmanagedPtr, other.UnmanagedPtr) == 1 ? true : false);
 			}
 
 			public static bool operator !=(InterfaceDescription one, InterfaceDescription other)
 			{
-				return (alljoyn_interfacedescription_eql(one.UnmanagedPtr, other.UnmanagedPtr) == 1 ? false : true);
+				return !(one == other);
 			}
 
 			public override bool Equals(object o) 
