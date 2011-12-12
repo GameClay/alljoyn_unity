@@ -17,7 +17,7 @@ namespace AllJoynUnity
 				_proxyBusObject = busObject;
 				_isDisposed = true;
 			}
-			
+
 			public QStatus AddInterface(InterfaceDescription iface)
 			{
 				return alljoyn_proxybusobject_addinterface(_proxyBusObject, iface.UnmanagedPtr);

@@ -103,7 +103,6 @@ namespace AllJoynUnity
 			{
 				IntPtr iface = alljoyn_busattachment_getinterface(_busAttachment, name);
 				InterfaceDescription ret = (iface != IntPtr.Zero ? new InterfaceDescription(iface) : null);
-				
 				return ret;
 			}
 
