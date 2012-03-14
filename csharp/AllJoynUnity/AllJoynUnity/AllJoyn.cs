@@ -20,6 +20,12 @@ namespace AllJoynUnity
 			return Marshal.PtrToStringAuto(alljoyn_getbuildinfo());
 		}
 
+		/// Get the numeric build number from AllJoyn.
+		public static uint GetNumericVersion()
+		{
+			return alljoyn_getnumericversion();
+		}
+
 		/// Call to trigger callbacks on main thread.
 		public static int TriggerCallbacks()
 		{
@@ -336,6 +342,9 @@ namespace AllJoynUnity
 
 		[DllImport(DLL_IMPORT_TARGET)]
 		private extern static IntPtr alljoyn_getbuildinfo();
+
+		[DllImport(DLL_IMPORT_TARGET)]
+		private extern static uint alljoyn_getnumericversion();
 
 		[DllImport(DLL_IMPORT_TARGET)]
 		private extern static IntPtr QCC_StatusText(int status);
