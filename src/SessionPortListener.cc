@@ -44,7 +44,6 @@ class SessionPortListenerCallbackC : public SessionPortListener {
     {
         QC_BOOL ret = SessionPortListener::AcceptSessionJoiner(sessionPort, joiner, opts) ? QC_TRUE : QC_FALSE;
         if (callbacks.accept_session_joiner != NULL) {
-            ret = callbacks.accept_session_joiner(context, sessionPort, joiner, (alljoyn_sessionopts)(&opts));
             DeferredCallback_4<QC_BOOL, const void*, SessionPort, const char*, alljoyn_sessionopts>* dcb =
                 new DeferredCallback_4<QC_BOOL, const void*, SessionPort, const char*, alljoyn_sessionopts>(callbacks.accept_session_joiner, context, sessionPort, joiner, (alljoyn_sessionopts)(&opts));
             ret = DEFERRED_CALLBACK_EXECUTE(dcb);
