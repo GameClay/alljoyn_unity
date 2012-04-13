@@ -18,10 +18,11 @@
 
 namespace ajn {
 
-std::list<DeferredCallback*> DeferredCallback::sPendingCallbacks;
+std::vector< std::list<DeferredCallback*> > DeferredCallback::sPendingCallbacks(10);
+int DeferredCallback::sPendingCallbackFrame = 0;
 pthread_t DeferredCallback::sMainThread = pthread_self();
 bool DeferredCallback::sMainThreadCallbacksOnly = false;
-qcc::Mutex DeferredCallback::sCallbackListLock;
+std::vector<qcc::Mutex> DeferredCallback::sCallbackListLock(10);
 
 }
 
