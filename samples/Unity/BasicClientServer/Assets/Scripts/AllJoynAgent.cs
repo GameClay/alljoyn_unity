@@ -2,8 +2,8 @@ using UnityEngine;
 using AllJoynUnity;
 
 // The AllJoynAgent prefab must exist once, and only once, in your scene.
-// This prefab/behavior will take care of the background loading and
-// message processing required to use AllJoyn with Unity.
+// This prefab/behavior will take care of the initialization required to
+// use AllJoyn with Unity.
 //
 // In addition, the AllJoynAgent.cs script must execute before any other
 // script which uses AllJoyn. Most Unity scripts use Start() for initialization,
@@ -23,14 +23,15 @@ public class AllJoynAgent : MonoBehaviour
 		Debug.Log("AllJoyn Library version: " + AllJoyn.GetVersion());
 		Debug.Log("AllJoyn Library buildInfo: " + AllJoyn.GetBuildInfo());
 
-		// Enable callbacks on main thread only
-		AllJoyn.SetMainThreadOnlyCallbacks(true);
+#if UNITY_ANDROID
+		AllJoyn.UnityInitialize("./libmono.so");
+#else
+		AllJoyn.UnityInitialize();
+#endif
 	}
 
-	// Update is called once per frame
-	void Update()
+	void OnDestroy()
 	{
-		// Pump messages from AllJoyn
-		AllJoyn.TriggerCallbacks();
+		AllJoyn.UnityDestroy();
 	}
 }
