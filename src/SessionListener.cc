@@ -24,7 +24,6 @@
 #include <alljoyn_unity/SessionListener.h>
 #include <string.h>
 #include <assert.h>
-#include "DeferredCallback.h"
 
 namespace ajn {
 
@@ -43,27 +42,21 @@ class SessionListenerCallbackC : public SessionListener {
     virtual void SessionLost(SessionId sessionId)
     {
         if (callbacks.session_lost != NULL) {
-            DeferredCallback_2<void, const void*, SessionId>* dcb =
-                new DeferredCallback_2<void, const void*, SessionId>(callbacks.session_lost, context, sessionId);
-            DEFERRED_CALLBACK_EXECUTE(dcb);
+            callbacks.session_lost(context, sessionId);
         }
     }
 
     virtual void SessionMemberAdded(SessionId sessionId, const char* uniqueName)
     {
         if (callbacks.session_member_added != NULL) {
-            DeferredCallback_3<void, const void*, SessionId, const char*>* dcb =
-                new DeferredCallback_3<void, const void*, SessionId, const char*>(callbacks.session_member_added, context, sessionId, uniqueName);
-            DEFERRED_CALLBACK_EXECUTE(dcb);
+            callbacks.session_member_added(context, sessionId, uniqueName);
         }
     }
 
     virtual void SessionMemberRemoved(SessionId sessionId, const char* uniqueName)
     {
         if (callbacks.session_member_removed != NULL) {
-            DeferredCallback_3<void, const void*, SessionId, const char*>* dcb =
-                new DeferredCallback_3<void, const void*, SessionId, const char*>(callbacks.session_member_removed, context, sessionId, uniqueName);
-            DEFERRED_CALLBACK_EXECUTE(dcb);
+            callbacks.session_member_removed(context, sessionId, uniqueName);
         }
     }
   protected:

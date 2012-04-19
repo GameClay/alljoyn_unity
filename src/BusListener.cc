@@ -24,7 +24,6 @@
 #include <alljoyn_unity/BusListener.h>
 #include <string.h>
 #include <assert.h>
-#include "DeferredCallback.h"
 
 namespace ajn {
 
@@ -43,63 +42,50 @@ class BusListenerCallbackC : BusListener {
     void ListenerRegistered(BusAttachment* bus)
     {
         if (callbacks.listener_registered != NULL) {
-            DeferredCallback_2<void, const void*, alljoyn_busattachment>* dcb =
-                new DeferredCallback_2<void, const void*, alljoyn_busattachment>(callbacks.listener_registered, context, (alljoyn_busattachment)bus);
-            DEFERRED_CALLBACK_EXECUTE(dcb);
+            callbacks.listener_registered(context, (alljoyn_busattachment)bus);
+
         }
     }
 
     void ListenerUnregistered()
     {
         if (callbacks.listener_unregistered != NULL) {
-            DeferredCallback_1<void, const void*>* dcb =
-                new DeferredCallback_1<void, const void*>(callbacks.listener_unregistered, context);
-            DEFERRED_CALLBACK_EXECUTE(dcb);
+            callbacks.listener_unregistered(context);
         }
     }
 
     void FoundAdvertisedName(const char* name, TransportMask transport, const char* namePrefix)
     {
         if (callbacks.found_advertised_name != NULL) {
-            DeferredCallback_4<void, const void*, const char*, TransportMask, const char*>* dcb =
-                new DeferredCallback_4<void, const void*, const char*, TransportMask, const char*>(callbacks.found_advertised_name, context, name, transport, namePrefix);
-            DEFERRED_CALLBACK_EXECUTE(dcb);
+            callbacks.found_advertised_name(context, name, transport, namePrefix);
         }
     }
 
     void LostAdvertisedName(const char* name, TransportMask transport, const char* namePrefix)
     {
         if (callbacks.lost_advertised_name != NULL) {
-            DeferredCallback_4<void, const void*, const char*, TransportMask, const char*>* dcb =
-                new DeferredCallback_4<void, const void*, const char*, TransportMask, const char*>(callbacks.lost_advertised_name, context, name, transport, namePrefix);
-            DEFERRED_CALLBACK_EXECUTE(dcb);
+            callbacks.lost_advertised_name(context, name, transport, namePrefix);
         }
     }
 
     void NameOwnerChanged(const char* busName, const char* previousOwner, const char* newOwner)
     {
         if (callbacks.name_owner_changed != NULL) {
-            DeferredCallback_4<void, const void*, const char*, const char*, const char*>* dcb =
-                new DeferredCallback_4<void, const void*, const char*, const char*, const char*>(callbacks.name_owner_changed, context, busName, previousOwner, newOwner);
-            DEFERRED_CALLBACK_EXECUTE(dcb);
+            callbacks.name_owner_changed(context, busName, previousOwner, newOwner);
         }
     }
 
     void BusStopping()
     {
         if (callbacks.bus_stopping != NULL) {
-            DeferredCallback_1<void, const void*>* dcb =
-                new DeferredCallback_1<void, const void*>(callbacks.bus_stopping, context);
-            DEFERRED_CALLBACK_EXECUTE(dcb);
+            callbacks.bus_stopping(context);
         }
     }
 
     void BusDisconnected()
     {
         if (callbacks.bus_disconnected != NULL) {
-            DeferredCallback_1<void, const void*>* dcb =
-                new DeferredCallback_1<void, const void*>(callbacks.bus_disconnected, context);
-            DEFERRED_CALLBACK_EXECUTE(dcb);
+            callbacks.bus_disconnected(context);
         }
     }
 

@@ -24,7 +24,6 @@
 #include <alljoyn_unity/SessionPortListener.h>
 #include <string.h>
 #include <assert.h>
-#include "DeferredCallback.h"
 
 namespace ajn {
 
@@ -44,9 +43,7 @@ class SessionPortListenerCallbackC : public SessionPortListener {
     {
         QC_BOOL ret = SessionPortListener::AcceptSessionJoiner(sessionPort, joiner, opts) ? QC_TRUE : QC_FALSE;
         if (callbacks.accept_session_joiner != NULL) {
-            DeferredCallback_4<QC_BOOL, const void*, SessionPort, const char*, alljoyn_sessionopts>* dcb =
-                new DeferredCallback_4<QC_BOOL, const void*, SessionPort, const char*, alljoyn_sessionopts>(callbacks.accept_session_joiner, context, sessionPort, joiner, (alljoyn_sessionopts)(&opts));
-            ret = DEFERRED_CALLBACK_EXECUTE(dcb);
+            callbacks.accept_session_joiner(context, sessionPort, joiner, (alljoyn_sessionopts)(&opts));
         }
         return (ret == QC_FALSE ? false : true);
     }
@@ -54,9 +51,7 @@ class SessionPortListenerCallbackC : public SessionPortListener {
     virtual void SessionJoined(SessionPort sessionPort, SessionId id, const char* joiner)
     {
         if (callbacks.session_joined != NULL) {
-            DeferredCallback_4<void, const void*, SessionPort, SessionId, const char*>* dcb =
-                new DeferredCallback_4<void, const void*, SessionPort, SessionId, const char*>(callbacks.session_joined, context, sessionPort, id, joiner);
-            DEFERRED_CALLBACK_EXECUTE(dcb);
+            callbacks.session_joined(context, sessionPort, id, joiner);
         }
     }
   protected:
