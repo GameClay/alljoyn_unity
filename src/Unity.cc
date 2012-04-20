@@ -97,6 +97,14 @@ QStatus alljoyn_unity_initialize(const char* libMonoPath)
         loaded_ptrs &= (fn_hdl != NULL);
         unity_mono.mono_thread_attach = (mono_thread_attach_ptr)fn_hdl;
 
+        /* mono_thread_detach */
+        fn_hdl = dlsym(g_mono_lib_hdl, "mono_thread_detach");
+        if(fn_hdl == NULL) {
+            AJ_DEBUG_LOG("ARG! mono_thread_detach %s\n", dlerror());
+        }
+        loaded_ptrs &= (fn_hdl != NULL);
+        unity_mono.mono_thread_detach = (mono_thread_detach_ptr)fn_hdl;
+
         /* mono_thread_current */
         fn_hdl = dlsym(g_mono_lib_hdl, "mono_thread_current");
         if(fn_hdl == NULL) {

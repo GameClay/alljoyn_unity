@@ -112,6 +112,7 @@ namespace AllJoynUnity
 
 			protected virtual void Dispose(bool disposing)
 			{
+				UnityEngine.Debug.Log("Maybe starting to trash _sessionOpts: " + _sessionOpts);
 				if(!_isDisposed)
 				{
 					UnityEngine.Debug.Log("TRASHING _sessionOpts: " + _sessionOpts);

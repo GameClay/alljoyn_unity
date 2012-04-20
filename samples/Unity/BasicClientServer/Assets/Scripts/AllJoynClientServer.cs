@@ -17,10 +17,13 @@ public class AllJoynClientServer : MonoBehaviour
 	// Update is called once per frame
 	void Update()
 	{
-		if(basicClient.Connected && !gotReply)
+		//System.GC.Collect();
+
+		if(basicClient.Connected/* && !gotReply*/)
 		{
+			string reply = basicClient.CallRemoteMethod();
+			//Debug.Log("BasicClient.CallRemoteMethod returned '" + reply + "'");
 			gotReply = true;
-			Debug.Log("BasicClient.CallRemoteMethod returned '" + basicClient.CallRemoteMethod() + "'");
 		}
 	}
 

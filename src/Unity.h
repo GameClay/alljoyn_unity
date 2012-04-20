@@ -45,16 +45,18 @@ typedef MonoObject* (*mono_runtime_delegate_invoke_ptr)(MonoObject* delegate, vo
 typedef void (*mono_add_internal_call_ptr)(const char *name, const void* method);
 typedef MonoDomain* (*mono_domain_get_ptr)();
 typedef MonoThread* (*mono_thread_attach_ptr)(MonoDomain* domain);
+typedef void (*mono_thread_detach_ptr)(MonoThread *thread);
 typedef MonoThread* (*mono_thread_current_ptr)();
 typedef uint32_t (*mono_gchandle_new_ptr)(MonoObject* object, int pinned);
 typedef void (*mono_gchandle_free_ptr)(uint32_t handle);
-typedef void* (*mono_object_unbox_ptr)(MonoObject *obj);
+typedef void* (*mono_object_unbox_ptr)(MonoObject* obj);
 
 typedef struct {
     mono_runtime_delegate_invoke_ptr mono_runtime_delegate_invoke;
     mono_add_internal_call_ptr mono_add_internal_call;
     mono_domain_get_ptr mono_domain_get;
     mono_thread_attach_ptr mono_thread_attach;
+    mono_thread_detach_ptr mono_thread_detach;
     mono_thread_current_ptr mono_thread_current;
     mono_gchandle_new_ptr mono_gchandle_new;
     mono_gchandle_free_ptr mono_gchandle_free;

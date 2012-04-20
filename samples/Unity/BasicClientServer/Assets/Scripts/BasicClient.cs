@@ -153,7 +153,7 @@ namespace basic_clientserver
 					
 					if(status)
 					{
-						Debug.Log(SERVICE_NAME + ".cat(path=" + SERVICE_PATH + ") returned \"" + (string)reply[0] + "\"");
+						//Debug.Log(SERVICE_NAME + ".cat(path=" + SERVICE_PATH + ") returned \"" + (string)reply[0] + "\"");
 						return (string)reply[0];
 					}
 					else

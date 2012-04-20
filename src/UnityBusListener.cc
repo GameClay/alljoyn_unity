@@ -74,7 +74,6 @@ class UnityBusListener : BusListener {
         AJ_DEBUG_LOG("ListenerRegistered %p\n", listener_registered);
         MonoThread* mthread = unity_mono.mono_thread_attach(g_unity_mono_domain);
         AJ_DEBUG_LOG("mthread = %p\n", mthread);
-
         if (listener_registered != NULL) {
             void* params[] = {this_object, &bus};
             unity_mono.mono_runtime_delegate_invoke(listener_registered, params, NULL);

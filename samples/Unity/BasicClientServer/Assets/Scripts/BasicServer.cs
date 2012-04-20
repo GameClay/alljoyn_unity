@@ -78,10 +78,10 @@ namespace basic_clientserver
 				{
 					Debug.Log("Server Rejecting join attempt on unexpected session port " + sessionPort);
 					return false;
-				}
+				}/*
 				Debug.Log("Server Accepting join session request from " + joiner + 
 					" (opts.proximity=" + opts.Proximity + ", opts.traffic=" + opts.Traffic + 
-					", opts.transports=" + opts.Transports + ")");
+					", opts.transports=" + opts.Transports + ")");*/
 				return true;
 			}
 		}

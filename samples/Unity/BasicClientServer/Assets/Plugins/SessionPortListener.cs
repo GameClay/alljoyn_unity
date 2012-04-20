@@ -38,14 +38,19 @@ namespace AllJoynUnity
 
 			#region Callbacks
 #if UNITY_ANDROID
+			string tempstr;
+			SessionOpts tempopts;
 			private static int _AcceptSessionJoiner(SessionPortListener context, ushort sessionPort, IntPtr joiner, IntPtr opts)
 			{
-				return (context.AcceptSessionJoiner(sessionPort, Marshal.PtrToStringAuto(joiner), new SessionOpts(opts)) ? 1 : 0);
+				context.tempstr = Marshal.PtrToStringAuto(joiner);
+				context.tempopts = new SessionOpts(opts);
+				return (context.AcceptSessionJoiner(sessionPort, context.tempstr, context.tempopts) ? 1 : 0);
 			}
 
 			private static void _SessionJoined(SessionPortListener context, ushort sessionPort, uint sessionId, IntPtr joiner)
 			{
-				context. SessionJoined(sessionPort, sessionId, Marshal.PtrToStringAuto(joiner));
+				context.tempstr = Marshal.PtrToStringAuto(joiner);
+				context.SessionJoined(sessionPort, sessionId, context.tempstr);
 			}
 #else
 			private int _AcceptSessionJoiner(IntPtr context, ushort sessionPort, IntPtr joiner, IntPtr opts)
